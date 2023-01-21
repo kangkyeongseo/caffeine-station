@@ -1,7 +1,12 @@
 import React from "react";
+import Map from "components/Map";
 
 const Home = () => {
-  return <span>Home</span>;
+  return (
+    <div>
+      <Map />
+    </div>
+  );
 };
 
 export default Home;
