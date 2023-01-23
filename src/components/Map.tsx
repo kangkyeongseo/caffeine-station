@@ -14,7 +14,11 @@ const Map = ({ location }: any) => {
     const map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
   }, []);
 
-  return <div id="map" style={{ width: 400, height: 400 }}></div>;
+  return (
+    <>
+      <div id="map" style={{ width: 400, height: 400 }}></div>
+    </>
+  );
 };
 
 export default Map;
