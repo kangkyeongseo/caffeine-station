@@ -9,7 +9,7 @@ interface Location {
   lon: null | number;
 }
 
-interface Place {
+export interface Place {
   address_name: string;
   category_group_code: string;
   category_group_name: string;
@@ -24,15 +24,14 @@ interface Place {
   y: string;
 }
 
-interface Places {
-  places: Place[];
+export interface Places {
+  place: Place[];
 }
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState<Location | null>(null);
   const data = useSearchPlaces(location ? location : null);
-  console.log(data);
   const getlocation = () => {
     if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition((position) => {
@@ -46,7 +45,16 @@ const Home = () => {
   useEffect(() => {
     getlocation();
   }, []);
-  return <div>{loading ? null : <Map location={location} />}</div>;
+  return (
+    <div>
+      {loading ? null : <Map location={location} />}
+      <div>
+        {data?.map((place) => (
+          <span key={place.id}>{place.place_name}</span>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default Home;

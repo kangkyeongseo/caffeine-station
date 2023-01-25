@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useState } from "react";
+import { Place } from "routes/Home";
 
 const { kakao }: any = window;
 
 const useSearchPlaces = (location: any) => {
-  const [data, setData] = useState();
+  const [newData, setNewData] = useState<Place[]>([]);
   const ps = new kakao.maps.services.Places();
   const latlng = new kakao.maps.LatLng(
     location && location.lat,
@@ -26,7 +27,7 @@ const useSearchPlaces = (location: any) => {
 
   const placesSearchCB = (data: any, status: any, pagination: any) => {
     if (status === kakao.maps.services.Status.OK) {
-      setData(data);
+      setNewData(data);
     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
       alert("검색 결과가 존재하지 않습니다.");
       return;
@@ -36,7 +37,7 @@ const useSearchPlaces = (location: any) => {
     }
   };
 
-  return data;
+  return newData;
 };
 
 export default useSearchPlaces;
