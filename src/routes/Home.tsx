@@ -1,12 +1,13 @@
 import React from "react";
-import Map from "components/Map";
 import { useEffect } from "react";
 import { useState } from "react";
 import useSearchPlaces from "components/useSearchPlaces";
+import Map from "components/Map";
+import Cafe from "components/Cafe";
 
-interface Location {
-  lat: null | number;
-  lon: null | number;
+export interface Location {
+  lat: number;
+  lon: number;
 }
 
 export interface Place {
@@ -47,10 +48,15 @@ const Home = () => {
   }, []);
   return (
     <div>
-      {loading ? null : <Map location={location} />}
+      {location ? <Map location={location} /> : null}
       <div>
         {data?.map((place) => (
-          <span key={place.id}>{place.place_name}</span>
+          <Cafe
+            key={place.id}
+            place_name={place.place_name}
+            road_address_name={place.road_address_name}
+            phone={place.phone}
+          />
         ))}
       </div>
     </div>

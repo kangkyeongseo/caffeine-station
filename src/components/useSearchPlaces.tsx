@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { Place } from "routes/Home";
+import { Location, Place } from "routes/Home";
 
 const { kakao }: any = window;
 
@@ -25,7 +25,7 @@ const useSearchPlaces = (location: any) => {
     });
   };
 
-  const placesSearchCB = (data: any, status: any, pagination: any) => {
+  const placesSearchCB = (data: Place[], status: any, pagination: any) => {
     if (status === kakao.maps.services.Status.OK) {
       setNewData(data);
     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
