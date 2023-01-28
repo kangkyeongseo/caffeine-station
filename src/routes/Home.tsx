@@ -32,7 +32,11 @@ export interface Places {
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState<Location | null>(null);
-  const data = useSearchPlaces(location ? location : null);
+  const [caffeinePrice, setCaffeinePrice] = useState("low");
+  const { newData: data, reset } = useSearchPlaces(
+    location ? location : null,
+    caffeinePrice
+  );
   const getlocation = () => {
     if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition((position) => {
@@ -46,8 +50,17 @@ const Home = () => {
   useEffect(() => {
     getlocation();
   }, []);
+  const onPriceClick = (price: string) => {
+    setCaffeinePrice(price);
+    reset(price);
+  };
   return (
     <div>
+      <ul>
+        <li onClick={() => onPriceClick("low")}>저가</li>
+        <li onClick={() => onPriceClick("middle")}>중가</li>
+        <li onClick={() => onPriceClick("high")}>고가</li>
+      </ul>
       {location ? <Map location={location} /> : null}
       <div>
         {data?.map((place) => (

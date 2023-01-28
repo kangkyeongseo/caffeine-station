@@ -4,7 +4,7 @@ import { Location, Place } from "routes/Home";
 
 const { kakao }: any = window;
 
-const useSearchPlaces = (location: any) => {
+const useSearchPlaces = (location: any, caffeinePrice: string) => {
   const [newData, setNewData] = useState<Place[]>([]);
   const ps = new kakao.maps.services.Places();
   const latlng = new kakao.maps.LatLng(
@@ -14,15 +14,25 @@ const useSearchPlaces = (location: any) => {
 
   useEffect(() => {
     if (location) {
-      searchCaffeine();
+      searchCaffeine(caffeinePrice);
     }
   }, [location]);
 
-  const searchCaffeine = () => {
-    ps.keywordSearch("메가커피", placesSearchCB, {
-      location: latlng,
-      sort: "distance",
-    });
+  const searchCaffeine = (caffeinePrice: string) => {
+    ps.keywordSearch(
+      caffeinePrice === "low"
+        ? "메가커피"
+        : caffeinePrice === "middle"
+        ? "이디야"
+        : caffeinePrice === "high"
+        ? "스타벅스"
+        : null,
+      placesSearchCB,
+      {
+        location: latlng,
+        sort: "distance",
+      }
+    );
   };
 
   const placesSearchCB = (data: Place[], status: any, pagination: any) => {
@@ -37,7 +47,11 @@ const useSearchPlaces = (location: any) => {
     }
   };
 
-  return newData;
+  const reset = (newCaffeinePrice: string) => {
+    searchCaffeine(newCaffeinePrice);
+  };
+
+  return { newData, reset };
 };
 
 export default useSearchPlaces;
