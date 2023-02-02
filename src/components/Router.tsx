@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import CafeDatail from "routes/CafeDetail";
 import Home from "routes/Home";
 import Profile from "routes/Profile";
 import Search from "routes/Search";
@@ -13,6 +14,7 @@ const AppRouter = () => {
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<Search />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/cafe/:id" element={<CafeDatail />} />
       </Routes>
     </Router>
   );

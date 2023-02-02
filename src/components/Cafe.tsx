@@ -1,13 +1,14 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Place } from "routes/Home";
 
-const Cafe = ({ place_name, road_address_name, phone }: any) => {
+const Cafe = ({ place_name, road_address_name, phone, id }: any) => {
   return (
-    <div>
+    <Link to={`/cafe/${id}`}>
       <span>{place_name}</span>
       <span>{road_address_name}</span>
       <span>{phone}</span>
-    </div>
+    </Link>
   );
 };
 

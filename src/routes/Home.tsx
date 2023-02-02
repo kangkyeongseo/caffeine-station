@@ -69,6 +69,7 @@ const Home = () => {
             place_name={place.place_name}
             road_address_name={place.road_address_name}
             phone={place.phone}
+            id={place.id}
           />
         ))}
       </div>
