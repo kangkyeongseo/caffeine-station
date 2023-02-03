@@ -25,10 +25,6 @@ export interface Place {
   y: string;
 }
 
-export interface Places {
-  place: Place[];
-}
-
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState<Location | null>(null);
@@ -64,13 +60,7 @@ const Home = () => {
       {location ? <Map location={location} /> : null}
       <div>
         {data?.map((place) => (
-          <Cafe
-            key={place.id}
-            place_name={place.place_name}
-            road_address_name={place.road_address_name}
-            phone={place.phone}
-            id={place.id}
-          />
+          <Cafe key={place.id} place={place} />
         ))}
       </div>
     </div>
