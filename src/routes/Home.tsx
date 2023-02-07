@@ -4,6 +4,7 @@ import { useState } from "react";
 import useSearchPlaces from "components/useSearchPlaces";
 import Map from "components/Map";
 import Cafe from "components/Cafe";
+import KakaoMap from "components/KakaoMap";
 
 export interface Location {
   lat: number;
@@ -52,6 +53,7 @@ const Home = () => {
   };
   return (
     <div>
+      <KakaoMap />
       <ul>
         <li onClick={() => onPriceClick("low")}>저가</li>
         <li onClick={() => onPriceClick("middle")}>중가</li>
