@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Place } from "routes/Home";
+import { Place } from "./KakaoMap";
 
 interface CafeProp {
   place: Place;

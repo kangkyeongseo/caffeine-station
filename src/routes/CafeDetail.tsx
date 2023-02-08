@@ -1,6 +1,6 @@
+import { Place } from "components/KakaoMap";
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { Place } from "./Home";
 
 interface DetailProp {
   state: {
