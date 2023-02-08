@@ -1,14 +1,10 @@
-import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import useSearchPlaces from "components/useSearchPlaces";
-import Map from "components/Map";
-import Cafe from "components/Cafe";
 import KakaoMap from "components/KakaoMap";
 
 export interface Location {
-  lat: number;
-  lon: number;
+  lat: number | null;
+  lon: number | null;
 }
 
 export interface Place {
@@ -28,12 +24,8 @@ export interface Place {
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
-  const [location, setLocation] = useState<Location | null>(null);
+  const [location, setLocation] = useState<Location>({ lat: null, lon: null });
   const [caffeinePrice, setCaffeinePrice] = useState("low");
-  const { newData: data, reset } = useSearchPlaces(
-    location ? location : null,
-    caffeinePrice
-  );
   const getlocation = () => {
     if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition((position) => {
@@ -41,30 +33,25 @@ const Home = () => {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
         });
-        setLoading(false);
       });
   };
   useEffect(() => {
     getlocation();
   }, []);
+  useEffect(() => {
+    if (location.lat) setLoading(false);
+  }, [location]);
   const onPriceClick = (price: string) => {
     setCaffeinePrice(price);
-    reset(price);
   };
   return (
     <div>
-      <KakaoMap />
       <ul>
         <li onClick={() => onPriceClick("low")}>저가</li>
         <li onClick={() => onPriceClick("middle")}>중가</li>
         <li onClick={() => onPriceClick("high")}>고가</li>
       </ul>
-      {location ? <Map location={location} /> : null}
-      <div>
-        {data?.map((place) => (
-          <Cafe key={place.id} place={place} />
-        ))}
-      </div>
+      {!loading ? <KakaoMap location={location} /> : null}
     </div>
   );
 };
