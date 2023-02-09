@@ -80,7 +80,6 @@ const KakaoMap = ({ location, arr }: prop) => {
 
   useEffect(() => {
     if (!loading) {
-      console.log(combineData);
       const displayMarkers = () => {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다
@@ -121,7 +120,9 @@ const KakaoMap = ({ location, arr }: prop) => {
       <div id="kakao-map" style={{ width: 400, height: 400 }}></div>
       <ul>
         {!loading
-          ? combineData.map((cafe) => <Cafe key={cafe.id} place={cafe} />)
+          ? combineData
+              .sort((a, b) => parseInt(a.distance) - parseInt(b.distance))
+              .map((cafe) => <Cafe key={cafe.id} place={cafe} />)
           : null}
       </ul>
     </>
