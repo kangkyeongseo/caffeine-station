@@ -7,10 +7,16 @@ export interface Location {
   lon: number | null;
 }
 
+const coffeePrice = {
+  low: ["메가커피", "컴포즈커피", "메머드커피", "빽다방", "더벤티"],
+  middle: ["이디야", "커피베이", "요거프레소"],
+  high: ["스타벅스", "투썸플레이스", "폴바셋", "드롭탑", "파스쿠찌"],
+};
+
 const Home = () => {
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState<Location>({ lat: null, lon: null });
-  const [arr, setArr] = useState<string[]>([]);
+  const [arr, setArr] = useState(coffeePrice.low);
   const getlocation = () => {
     if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition((position) => {
@@ -27,18 +33,18 @@ const Home = () => {
     if (location.lat) setLoading(false);
   }, [location]);
   useEffect(() => {
-    if (arr.length) setLoading(false);
+    if (location.lat && arr.length) {
+      setLoading(false);
+    }
   }, [arr]);
   const onPriceClick = (price: string) => {
+    setLoading(true);
     if (price === "low") {
-      setArr(["메가커피", "컴포즈커피", "메머드커피", "빽다방"]);
-      setLoading(true);
+      setArr(coffeePrice.low);
     } else if (price === "middle") {
-      setArr(["이디야", "커피베이", "요거프레소"]);
-      setLoading(true);
+      setArr(coffeePrice.middle);
     } else {
-      setArr(["스타벅스", "투썸플레이스", "폴바셋"]);
-      setLoading(true);
+      setArr(coffeePrice.high);
     }
   };
   return (
@@ -48,7 +54,11 @@ const Home = () => {
         <li onClick={() => onPriceClick("middle")}>중가</li>
         <li onClick={() => onPriceClick("high")}>고가</li>
       </ul>
-      {!loading ? <KakaoMap location={location} arr={arr} /> : null}
+      {!loading ? (
+        <KakaoMap location={location} arr={arr} />
+      ) : (
+        <span>Loading</span>
+      )}
     </div>
   );
 };

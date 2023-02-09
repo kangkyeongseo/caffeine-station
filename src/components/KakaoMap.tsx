@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Location } from "routes/Home";
 import { kakao } from "./App";
+import Cafe from "./Cafe";
 
 interface prop {
   location: Location;
@@ -26,58 +27,59 @@ const KakaoMap = ({ location, arr }: prop) => {
   // 마커를 담을 배열입니다
   const [loading, setLoading] = useState(true);
   const [combineData, setCombineDate] = useState<Place[]>([]);
-  const [map, setMap] = useState<any>();
+  const [map, setMap] = useState<any>(null);
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
   const latlng = new kakao.maps.LatLng(location.lat, location.lon);
 
   useEffect(() => {
-    const mapContainer = document.getElementById("kakao-map"), // 지도를 표시할 div
-      mapOption = {
-        center: new kakao.maps.LatLng(location.lat, location.lon), // 지도의 중심좌표
-        level: 3, // 지도의 확대 레벨
-      };
-
+    const mapContainer = document.getElementById("kakao-map"); // 지도를 표시할 div
+    const mapOption = {
+      center: new kakao.maps.LatLng(location.lat, location.lon), // 지도의 중심좌표
+      level: 3, // 지도의 확대 레벨
+    };
     // 지도를 생성합니다
     setMap(new kakao.maps.Map(mapContainer, mapOption));
-
-    // 장소 검색 객체를 생성합니다
-    const ps = new kakao.maps.services.Places();
-
-    // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-
-    const placesSearchCB = (data: Place[], status: any) => {
-      if (status === kakao.maps.services.Status.OK) {
-        data.forEach((cafe) => {
-          if (parseInt(cafe.distance) < 1000) {
-            setCombineDate((pre) => [...pre, cafe]);
-          }
-        });
-      } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-        alert("검색 결과가 존재하지 않습니다.");
-        return;
-      } else if (status === kakao.maps.services.Status.ERROR) {
-        alert("검색 결과 중 오류가 발생했습니다.");
-        return;
-      }
-    };
-
-    const startSearch = async () => {
-      await Promise.all(
-        arr.map((keyword) => {
-          ps.keywordSearch(keyword, placesSearchCB, {
-            location: latlng,
-            sort: "distance",
-          });
-        })
-      );
-      setLoading(false);
-    };
-
-    startSearch();
   }, []);
 
   useEffect(() => {
-    if (!loading && map) {
+    if (map) {
+      // 장소 검색 객체를 생성합니다
+      const ps = new kakao.maps.services.Places();
+      // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+      const placesSearchCB = (data: Place[], status: any) => {
+        if (status === kakao.maps.services.Status.OK) {
+          data.forEach((cafe) => {
+            if (parseInt(cafe.distance) < 1500) {
+              setCombineDate((pre) => [...pre, cafe]);
+            }
+          });
+        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+          alert("검색 결과가 존재하지 않습니다.");
+          return;
+        } else if (status === kakao.maps.services.Status.ERROR) {
+          alert("검색 결과 중 오류가 발생했습니다.");
+          return;
+        }
+      };
+
+      const startSearch = async () => {
+        await Promise.all(
+          arr.map((keyword) => {
+            ps.keywordSearch(keyword, placesSearchCB, {
+              location: latlng,
+              sort: "distance",
+            });
+          })
+        );
+        setLoading(false);
+      };
+
+      startSearch();
+    }
+  }, [map]);
+
+  useEffect(() => {
+    if (!loading) {
       console.log(combineData);
       const displayMarkers = () => {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
@@ -117,6 +119,11 @@ const KakaoMap = ({ location, arr }: prop) => {
   return (
     <>
       <div id="kakao-map" style={{ width: 400, height: 400 }}></div>
+      <ul>
+        {!loading
+          ? combineData.map((cafe) => <Cafe key={cafe.id} place={cafe} />)
+          : null}
+      </ul>
     </>
   );
 };
