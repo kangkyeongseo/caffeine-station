@@ -43,6 +43,25 @@ const KakaoMap = ({ location, arr }: prop) => {
 
   useEffect(() => {
     if (map) {
+      const imageSrc = "marker.png"; // 마커이미지의 주소입니다
+      const imageSize = new kakao.maps.Size(30, 42); // 마커이미지의 크기입니다
+      const imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+      // 마커가 표시될 위치입니다
+      const markerImage = new kakao.maps.MarkerImage(
+        imageSrc,
+        imageSize,
+        imageOption
+      );
+      const markerPosition = new kakao.maps.LatLng(location.lat, location.lon);
+
+      // 마커를 생성합니다
+      const marker = new kakao.maps.Marker({
+        position: markerPosition,
+        image: markerImage,
+      });
+
+      // 마커가 지도 위에 표시되도록 설정합니다
+      marker.setMap(map);
       // 장소 검색 객체를 생성합니다
       const ps = new kakao.maps.services.Places();
       // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
@@ -95,7 +114,7 @@ const KakaoMap = ({ location, arr }: prop) => {
       };
       const displayMarker = (place: Place) => {
         // 마커를 생성하고 지도에 표시합니다
-        var marker = new kakao.maps.Marker({
+        const marker = new kakao.maps.Marker({
           map: map,
           position: new kakao.maps.LatLng(place.y, place.x),
         });
