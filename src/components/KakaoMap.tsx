@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Location } from "routes/Home";
-import { kakao } from "./App";
+
+import { kakao, Location } from "./App";
 import Cafe from "./Cafe";
 
 interface prop {
