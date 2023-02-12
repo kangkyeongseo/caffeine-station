@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-
+import { useEffect, useState } from "react";
 import { kakao, Location } from "./App";
 import Cafe from "./Cafe";
 
 interface prop {
   location: Location;
   arr: string[];
+  isSearching?: boolean;
+  newPlace?: string | null;
 }
 
 export interface Place {
@@ -23,23 +24,36 @@ export interface Place {
   y: string;
 }
 
-const KakaoMap = ({ location, arr }: prop) => {
+const KakaoMap = ({
+  location,
+  arr,
+  isSearching = false,
+  newPlace = null,
+}: prop) => {
   // 마커를 담을 배열입니다
   const [loading, setLoading] = useState(true);
   const [combineData, setCombineDate] = useState<Place[]>([]);
   const [map, setMap] = useState<any>(null);
+  const [newLocation, setNewLocation] = useState<Location>({
+    lat: null,
+    lon: null,
+  });
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
   const latlng = new kakao.maps.LatLng(location.lat, location.lon);
 
   useEffect(() => {
     const mapContainer = document.getElementById("kakao-map"); // 지도를 표시할 div
     const mapOption = {
-      center: new kakao.maps.LatLng(location.lat, location.lon), // 지도의 중심좌표
+      center: new kakao.maps.LatLng(
+        newLocation.lat ? newLocation.lat : location.lat,
+        newLocation.lon ? newLocation.lon : location.lon
+      ), // 지도의 중심좌표
       level: 3, // 지도의 확대 레벨
     };
+    console.log(mapOption);
     // 지도를 생성합니다
     setMap(new kakao.maps.Map(mapContainer, mapOption));
-  }, []);
+  }, [newLocation]);
 
   useEffect(() => {
     if (map) {
@@ -52,7 +66,10 @@ const KakaoMap = ({ location, arr }: prop) => {
         imageSize,
         imageOption
       );
-      const markerPosition = new kakao.maps.LatLng(location.lat, location.lon);
+      const markerPosition = new kakao.maps.LatLng(
+        newLocation.lat ? newLocation.lat : location.lat,
+        newLocation.lon ? newLocation.lon : location.lon
+      );
 
       // 마커를 생성합니다
       const marker = new kakao.maps.Marker({
@@ -93,9 +110,29 @@ const KakaoMap = ({ location, arr }: prop) => {
         setLoading(false);
       };
 
-      startSearch();
+      const newPlacesSearchCB = (data: Place[], status: any) => {
+        if (status === kakao.maps.services.Status.OK) {
+          setNewLocation({
+            lat: Number(data[0].y),
+            lon: Number(data[0].x),
+          });
+        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+          alert("검색 결과가 존재하지 않습니다.");
+          return;
+        } else if (status === kakao.maps.services.Status.ERROR) {
+          alert("검색 결과 중 오류가 발생했습니다.");
+          return;
+        }
+      };
+
+      if (!isSearching) {
+        startSearch();
+      } else if (newPlace!.length > 1 && !newLocation.lat) {
+        ps.keywordSearch(newPlace, newPlacesSearchCB);
+        console.log("search");
+      }
     }
-  }, [map]);
+  }, [map, newPlace]);
 
   useEffect(() => {
     if (!loading) {
