@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import KakaoMap from "components/KakaoMap";
-import { Location, locationState } from "Atom";
+import { locationState } from "Atom";
 import { useRecoilValue } from "recoil";
 
 export const coffeePrice = {

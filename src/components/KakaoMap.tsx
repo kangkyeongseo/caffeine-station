@@ -1,4 +1,4 @@
-import { Location, locationState } from "Atom";
+import { locationState } from "Atom";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { kakao } from "../App";
@@ -26,17 +26,18 @@ export interface Place {
 }
 
 const KakaoMap = ({ arr, isSearching = false, newPlace = null }: prop) => {
-  const [loading, setLoading] = useState(true);
   const [location, setLocation] = useRecoilState(locationState);
+  const [loading, setLoading] = useState(true);
   const [combineData, setCombineDate] = useState<Place[]>([]);
+  const [placeSearching, setPlaceSearching] = useState(isSearching);
   const [map, setMap] = useState<any>(null);
+  const [latlng, setLatlng] = useState(null);
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-  const latlng = new kakao.maps.LatLng(location.lat, location.lon);
   // 장소 검색 객체를 생성합니다
   const ps = new kakao.maps.services.Places();
   // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
   const placesSearchCB = (data: Place[], status: any) => {
-    if (status === kakao.maps.services.Status.OK && isSearching) {
+    if (status === kakao.maps.services.Status.OK && placeSearching) {
       setLocation({
         lat: Number(data[0].y),
         lon: Number(data[0].x),
@@ -76,10 +77,11 @@ const KakaoMap = ({ arr, isSearching = false, newPlace = null }: prop) => {
     };
     // 지도를 생성합니다
     setMap(new kakao.maps.Map(mapContainer, mapOption));
+    setLatlng(new kakao.maps.LatLng(location.lat, location.lon));
   }, [location]);
 
   useEffect(() => {
-    if (map && !isSearching) startSearch();
+    if (map && !placeSearching) startSearch();
     if (map) {
       const imageSrc = "marker.png"; // 마커이미지의 주소입니다
       const imageSize = new kakao.maps.Size(30, 42); // 마커이미지의 크기입니다
@@ -102,9 +104,15 @@ const KakaoMap = ({ arr, isSearching = false, newPlace = null }: prop) => {
   }, [map]);
 
   useEffect(() => {
-    if (newPlace && newPlace?.length > 1) {
+    if (placeSearching) {
+      setCombineDate([]);
       ps.keywordSearch(newPlace, placesSearchCB);
+      setPlaceSearching(false);
     }
+  }, [placeSearching]);
+
+  useEffect(() => {
+    if (newPlace && newPlace.length > 1) setPlaceSearching(true);
   }, [newPlace]);
 
   useEffect(() => {

@@ -22,6 +22,7 @@ const Search = () => {
   useEffect(() => {
     if (location.lat) setLoading(false);
   }, [location]);
+
   return (
     <>
       <form onSubmit={onSubmit}>
@@ -29,11 +30,7 @@ const Search = () => {
         <input type="submit" value="검색" />
       </form>
       {!loading ? (
-        <KakaoMap
-          arr={coffeePrice.low}
-          isSearching={true}
-          newPlace={newPlace}
-        />
+        <KakaoMap arr={coffeePrice.low} newPlace={newPlace} />
       ) : (
         <span>Loading</span>
       )}
