@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
-import AppRouter from "./Router";
+import { Location, locationState } from "Atom";
+import React, { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import AppRouter from "./components/Router";
 
 export const { kakao } = window;
 
@@ -9,13 +11,8 @@ declare global {
   }
 }
 
-export interface Location {
-  lat: number | null;
-  lon: number | null;
-}
-
 function App() {
-  const [location, setLocation] = useState<Location>({ lat: null, lon: null });
+  const [location, setLocation] = useRecoilState(locationState);
   const getlocation = () => {
     if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition((position) => {
@@ -25,10 +22,12 @@ function App() {
         });
       });
   };
+
   useEffect(() => {
     getlocation();
   }, []);
-  return <AppRouter location={location} />;
+
+  return <AppRouter />;
 }
 
 export default App;

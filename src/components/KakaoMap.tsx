@@ -1,9 +1,10 @@
+import { Location, locationState } from "Atom";
 import { useEffect, useState } from "react";
-import { kakao, Location } from "./App";
+import { useRecoilState } from "recoil";
+import { kakao } from "../App";
 import Cafe from "./Cafe";
 
 interface prop {
-  location: Location;
   arr: string[];
   isSearching?: boolean;
   newPlace?: string | null;
@@ -24,13 +25,8 @@ export interface Place {
   y: string;
 }
 
-const KakaoMap = ({
-  location,
-  arr,
-  isSearching = false,
-  newPlace = null,
-}: prop) => {
-  // 마커를 담을 배열입니다
+const KakaoMap = ({ arr, isSearching = false, newPlace = null }: prop) => {
+  const [location, setLocation] = useRecoilState(locationState);
   const [loading, setLoading] = useState(true);
   const [combineData, setCombineDate] = useState<Place[]>([]);
   const [map, setMap] = useState<any>(null);

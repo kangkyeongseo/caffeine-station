@@ -1,13 +1,11 @@
-import { Location } from "components/App";
+import { Location, locationState } from "Atom";
 import KakaoMap from "components/KakaoMap";
 import React, { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 import { coffeePrice } from "./Home";
 
-interface Prop {
-  location: Location;
-}
-
-const Search = ({ location }: Prop) => {
+const Search = () => {
+  const location = useRecoilValue(locationState);
   const [loading, setLoading] = useState(true);
   const [searchingPlace, setSearchingPlace] = useState("");
   const [newPlace, setNewPlace] = useState("");
@@ -32,7 +30,6 @@ const Search = ({ location }: Prop) => {
       </form>
       {!loading ? (
         <KakaoMap
-          location={location}
           arr={coffeePrice.low}
           isSearching={true}
           newPlace={newPlace}
