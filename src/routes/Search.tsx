@@ -9,6 +9,7 @@ const Search = () => {
   const [loading, setLoading] = useState(true);
   const [searchingPlace, setSearchingPlace] = useState("");
   const [newPlace, setNewPlace] = useState("");
+  const [arr, setArr] = useState(coffeePrice.low);
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     const {
       currentTarget: { value },
@@ -23,14 +24,36 @@ const Search = () => {
     if (location.lat) setLoading(false);
   }, [location]);
 
+  useEffect(() => {
+    if (location.lat) {
+      setLoading(false);
+    }
+  }, [arr]);
+
+  const onPriceClick = (price: string) => {
+    setLoading(true);
+    if (price === "low") {
+      setArr(coffeePrice.low);
+    } else if (price === "middle") {
+      setArr(coffeePrice.middle);
+    } else {
+      setArr(coffeePrice.high);
+    }
+  };
+
   return (
     <>
       <form onSubmit={onSubmit}>
         <input type="text" placeholder="주소" onChange={onChange} />
         <input type="submit" value="검색" />
       </form>
+      <ul>
+        <li onClick={() => onPriceClick("low")}>저가</li>
+        <li onClick={() => onPriceClick("middle")}>중가</li>
+        <li onClick={() => onPriceClick("high")}>고가</li>
+      </ul>
       {!loading ? (
-        <KakaoMap arr={coffeePrice.low} newPlace={newPlace} />
+        <KakaoMap arr={arr} newPlace={newPlace} />
       ) : (
         <span>Loading</span>
       )}
