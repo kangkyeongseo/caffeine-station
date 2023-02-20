@@ -8,6 +8,7 @@ interface prop {
   arr: string[];
   isSearching?: boolean;
   newPlace?: string | null;
+  getCenter?: boolean;
 }
 
 export interface Place {
@@ -25,13 +26,19 @@ export interface Place {
   y: string;
 }
 
-const KakaoMap = ({ arr, isSearching = false, newPlace = null }: prop) => {
+const KakaoMap = ({
+  arr,
+  isSearching = false,
+  newPlace = null,
+  getCenter = false,
+}: prop) => {
   const [location, setLocation] = useRecoilState(locationState);
   const [loading, setLoading] = useState(true);
   const [combineData, setCombineDate] = useState<Place[]>([]);
   const [placeSearching, setPlaceSearching] = useState(isSearching);
   const [map, setMap] = useState<any>(null);
   const [latlng, setLatlng] = useState(null);
+  const [newCenter, setNewCenter] = useState(getCenter);
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
   // 장소 검색 객체를 생성합니다
   const ps = new kakao.maps.services.Places();
@@ -150,6 +157,17 @@ const KakaoMap = ({ arr, isSearching = false, newPlace = null }: prop) => {
       displayMarkers();
     }
   }, [combineData]);
+
+  useEffect(() => {
+    if (getCenter) {
+      setCombineDate([]);
+      const center = map.getCenter();
+      setLocation({
+        lat: Number(center.Ma),
+        lon: Number(center.La),
+      });
+    }
+  }, [getCenter]);
 
   return (
     <>

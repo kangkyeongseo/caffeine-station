@@ -10,6 +10,7 @@ const Search = () => {
   const [searchingPlace, setSearchingPlace] = useState("");
   const [newPlace, setNewPlace] = useState("");
   const [arr, setArr] = useState(coffeePrice.low);
+  const [getCenter, setGetCenter] = useState(false);
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     const {
       currentTarget: { value },
@@ -30,6 +31,14 @@ const Search = () => {
     }
   }, [arr]);
 
+  useEffect(() => {
+    if (getCenter) {
+      setLoading(true);
+      setGetCenter(false);
+      setLoading(false);
+    }
+  }, [getCenter]);
+
   const onPriceClick = (price: string) => {
     setLoading(true);
     if (price === "low") {
@@ -39,6 +48,10 @@ const Search = () => {
     } else {
       setArr(coffeePrice.high);
     }
+  };
+
+  const onClick = () => {
+    setGetCenter(true);
   };
 
   return (
@@ -52,12 +65,12 @@ const Search = () => {
         <li onClick={() => onPriceClick("middle")}>중가</li>
         <li onClick={() => onPriceClick("high")}>고가</li>
       </ul>
+      <button onClick={onClick}>이 지역 재검색</button>
       {!loading ? (
-        <KakaoMap arr={arr} newPlace={newPlace} />
+        <KakaoMap arr={arr} newPlace={newPlace} getCenter={getCenter} />
       ) : (
         <span>Loading</span>
       )}
-      <button>이 지역 재검색</button>
     </>
   );
 };
