@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CafeDatail from "routes/CafeDetail";
 import Home from "routes/Home";
+import Join from "routes/Join";
 import Login from "routes/Login";
 import Profile from "routes/Profile";
 import Search from "routes/Search";
@@ -14,6 +15,7 @@ const AppRouter = () => {
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<Search />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/join" element={<Join />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/cafe/:id" element={<CafeDatail />} />
       </Routes>
