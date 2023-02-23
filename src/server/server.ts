@@ -1,7 +1,8 @@
 import express from "express";
 import path from "path";
 import cors from "cors";
-import "../db";
+import "../db/db";
+import apiRouter from "./apiRouter";
 
 const app = express();
 const PORT = 8000;
@@ -16,9 +17,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.post("/api/login", (req, res) => {
-  console.log(req.body);
-  res.json({ message: "login" });
-});
+app.use("/api", apiRouter);
+app.get("/", (req, res) => res.send("express server"));
 
 app.listen(PORT, () => console.log(`Listening on http://localhost${PORT}`));
