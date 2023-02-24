@@ -16,7 +16,16 @@ export const postJoin: RequestHandler = async (req, res) => {
   res.sendStatus(200);
 };
 
-export const postLogin: RequestHandler = (req, res) => {
-  console.log(req.body);
-  res.json({ message: "login" });
+export const postLogin: RequestHandler = async (req, res) => {
+  const {
+    body: { id, password },
+  } = req;
+  const user = await User.findOne({ id });
+  if (!user) {
+    return res.json({ ok: false, message: "ID does not exist" });
+  }
+  if (user?.password !== password) {
+    return res.json({ ok: false, message: "Password does not match" });
+  }
+  return res.json({ ok: true, message: "Login" });
 };

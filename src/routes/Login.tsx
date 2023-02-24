@@ -1,33 +1,50 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+
+interface Form {
+  id: string;
+  password: string;
+}
 
 const Login = () => {
-  const [id, setId] = useState("");
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const {
-      currentTarget: { value },
-    } = event;
-    setId(value);
-  };
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    await fetch("http://localhost:8000/api/login", {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Form>();
+  const [loginMessage, setLoginMessage] = useState("");
+  const navigate = useNavigate();
+  const onValid = async (data: Form) => {
+    const json = await fetch("http://localhost:8000/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id,
-      }),
-    })
-      .then((response) => response.json())
-      .then((json) => console.log(json));
+      body: JSON.stringify(data),
+    }).then((response) => response.json());
+    if (!json.ok) {
+      setLoginMessage(json.message);
+    } else {
+      navigate("/");
+    }
   };
   return (
     <>
-      <form onSubmit={onSubmit}>
-        <input type="text" placeholder="ID" onChange={onChange} value={id} />
-        <input type="password" placeholder="Password" />
+      <form onSubmit={handleSubmit(onValid)}>
+        <input
+          {...register("id", { required: "Write here" })}
+          type="text"
+          placeholder="ID"
+        />
+        {errors.id?.message}
+        <input
+          {...register("password", { required: "Write here" })}
+          type="password"
+          placeholder="Password"
+        />
+        {errors.password?.message}
         <input type="submit" placeholder="Login" />
       </form>
+      {loginMessage}
       <Link to="/join">Join</Link>
     </>
   );
