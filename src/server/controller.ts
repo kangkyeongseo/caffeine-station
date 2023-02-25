@@ -27,5 +27,7 @@ export const postLogin: RequestHandler = async (req, res) => {
   if (user?.password !== password) {
     return res.json({ ok: false, message: "Password does not match" });
   }
+  req.session.loggedIn = true;
+  req.session.id = user.id;
   return res.json({ ok: true, message: "Login" });
 };
