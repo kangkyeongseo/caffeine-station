@@ -1,6 +1,8 @@
+import { sessionState } from "Atom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
 
 interface Form {
   id: string;
@@ -14,6 +16,7 @@ const Login = () => {
     formState: { errors },
   } = useForm<Form>();
   const [loginMessage, setLoginMessage] = useState("");
+  const [session, setSassion] = useRecoilState(sessionState);
   const navigate = useNavigate();
   const onValid = async (data: Form) => {
     const json = await fetch("http://localhost:8000/api/login", {
@@ -24,6 +27,8 @@ const Login = () => {
     if (!json.ok) {
       setLoginMessage(json.message);
     } else {
+      console.log(json);
+      setSassion({ loggedIn: json.session.loggedIn, user: json.session.user });
       navigate("/");
     }
   };

@@ -3,10 +3,13 @@ import session from "express-session";
 import cors from "cors";
 import "../db/db";
 import apiRouter from "./apiRouter";
+import { User } from "db/User";
+import MongoStore from "connect-mongo";
 
 declare module "express-session" {
   interface SessionData {
-    loggedIn: boolean;
+    loggedIn: boolean | null;
+    user: User | null;
   }
 }
 
@@ -22,7 +25,16 @@ app.get("/", (req, res) =>
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(session({ secret: "secret", resave: false, saveUninitialized: false }));
+app.use(
+  session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: "mongodb://127.0.0.1:27017/caffeine-station",
+    }),
+  })
+);
 
 app.use("/api", apiRouter);
 app.get("/", (req, res) => res.send("express server"));

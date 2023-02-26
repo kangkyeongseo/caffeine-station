@@ -1,5 +1,6 @@
 import User from "../db/User";
 import { RequestHandler } from "express";
+import session from "express-session";
 
 export const postJoin: RequestHandler = async (req, res) => {
   const {
@@ -7,7 +8,7 @@ export const postJoin: RequestHandler = async (req, res) => {
   } = req;
   try {
     await User.create({
-      id,
+      userId: id,
       password,
     });
   } catch {
@@ -28,6 +29,12 @@ export const postLogin: RequestHandler = async (req, res) => {
     return res.json({ ok: false, message: "Password does not match" });
   }
   req.session.loggedIn = true;
-  req.session.id = user.id;
-  return res.json({ ok: true, message: "Login" });
+  req.session.user = user;
+  req.session.save(() => {
+    return res.json({ ok: true, message: "Login", session: req.session });
+  });
+};
+
+export const getSession: RequestHandler = (req, res) => {
+  console.log(req.session);
 };

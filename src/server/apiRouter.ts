@@ -1,9 +1,10 @@
 import express from "express";
-import { postJoin, postLogin } from "./controller";
+import { getSession, postJoin, postLogin } from "./controller";
 
 const apiRouter = express.Router();
 
 apiRouter.post("/login", postLogin);
 apiRouter.post("/join", postJoin);
+apiRouter.get("/session", getSession);
 
 export default apiRouter;

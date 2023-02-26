@@ -1,4 +1,4 @@
-import { Location, locationState } from "Atom";
+import { Location, locationState, sessionState } from "Atom";
 import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import AppRouter from "./components/Router";
@@ -13,7 +13,8 @@ declare global {
 
 function App() {
   const [location, setLocation] = useRecoilState(locationState);
-  const getlocation = () => {
+  const [session, setSession] = useRecoilState(sessionState);
+  const getLocation = () => {
     if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition((position) => {
         setLocation({
@@ -22,9 +23,12 @@ function App() {
         });
       });
   };
-
+  const getSession = () => {
+    console.log(session);
+  };
   useEffect(() => {
-    getlocation();
+    getLocation();
+    getSession();
   }, []);
 
   return <AppRouter />;
