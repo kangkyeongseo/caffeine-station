@@ -27,7 +27,6 @@ const Login = () => {
     if (!json.ok) {
       setLoginMessage(json.message);
     } else {
-      console.log(json);
       setSassion({ loggedIn: json.session.loggedIn, user: json.session.user });
       navigate("/");
     }

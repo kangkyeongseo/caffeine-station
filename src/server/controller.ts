@@ -21,7 +21,8 @@ export const postLogin: RequestHandler = async (req, res) => {
   const {
     body: { id, password },
   } = req;
-  const user = await User.findOne({ id });
+  const user = await User.findOne({ userId: id });
+  console.log(user);
   if (!user) {
     return res.json({ ok: false, message: "ID does not exist" });
   }
@@ -31,10 +32,11 @@ export const postLogin: RequestHandler = async (req, res) => {
   req.session.loggedIn = true;
   req.session.user = user;
   req.session.save(() => {
+    console.log(req.session);
     return res.json({ ok: true, message: "Login", session: req.session });
   });
 };
 
 export const getSession: RequestHandler = (req, res) => {
-  console.log(req.session);
+  console.log(req.session.id);
 };

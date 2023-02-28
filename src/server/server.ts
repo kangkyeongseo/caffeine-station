@@ -5,6 +5,7 @@ import "../db/db";
 import apiRouter from "./apiRouter";
 import { User } from "db/User";
 import MongoStore from "connect-mongo";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 declare module "express-session" {
   interface SessionData {
@@ -30,13 +31,17 @@ app.use(
     secret: "secret",
     resave: true,
     saveUninitialized: false,
+    cookie: { secure: false },
     store: MongoStore.create({
       mongoUrl: "mongodb://127.0.0.1:27017/caffeine-station",
     }),
   })
 );
 
+app.get("/", (req, res) => {
+  console.log(req.session.id);
+  return res.end();
+});
 app.use("/api", apiRouter);
-app.get("/", (req, res) => res.send("express server"));
 
 app.listen(PORT, () => console.log(`Listening on http://localhost${PORT}`));

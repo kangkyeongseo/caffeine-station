@@ -23,8 +23,8 @@ function App() {
         });
       });
   };
-  const getSession = () => {
-    console.log(session);
+  const getSession = async () => {
+    await fetch("http://localhost:8000/api/session");
   };
   useEffect(() => {
     getLocation();
