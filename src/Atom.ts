@@ -8,7 +8,11 @@ export interface Location {
 
 export interface Session {
   loggedIn: boolean;
-  user: User | null;
+  user: UserWithId | null;
+}
+
+interface UserWithId extends User {
+  _id: string;
 }
 
 export const locationState = atom<Location>({

@@ -1,6 +1,6 @@
 import User from "../db/User";
 import { RequestHandler } from "express";
-import session from "express-session";
+import { async } from "q";
 
 export const postJoin: RequestHandler = async (req, res) => {
   const {
@@ -32,11 +32,28 @@ export const postLogin: RequestHandler = async (req, res) => {
   req.session.loggedIn = true;
   req.session.user = user;
   req.session.save(() => {
-    console.log(req.session);
     return res.json({ ok: true, message: "Login", session: req.session });
   });
 };
 
-export const getSession: RequestHandler = (req, res) => {
-  console.log(req.session.id);
+export const getSession: RequestHandler = (req, res) => {};
+
+export const postHeart: RequestHandler = async (req, res) => {
+  const {
+    body: { _id, id },
+  } = req;
+  const user = await User.findById(_id);
+  if (user) {
+    if (user.hearts.includes(id)) {
+      const index = user.hearts.indexOf(id);
+      user.hearts.splice(index, 1);
+    } else {
+      user.hearts.push(id);
+    }
+    user.save();
+    req.session.user = user;
+    return res.json(user);
+  } else {
+    return res.sendStatus(400);
+  }
 };

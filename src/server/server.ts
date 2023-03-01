@@ -5,7 +5,6 @@ import "../db/db";
 import apiRouter from "./apiRouter";
 import { User } from "db/User";
 import MongoStore from "connect-mongo";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 
 declare module "express-session" {
   interface SessionData {
@@ -40,7 +39,7 @@ app.use(
 
 app.get("/", (req, res) => {
   console.log(req.session.id);
-  return res.end();
+  res.end();
 });
 app.use("/api", apiRouter);
 

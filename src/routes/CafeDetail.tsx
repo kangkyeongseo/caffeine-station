@@ -3,11 +3,14 @@ import {
   faMapMarked,
   faPhone,
   faRoad,
+  faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { sessionState } from "Atom";
 import { Place } from "components/KakaoMap";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import { kakao } from "../App";
 
 interface DetailProp {
@@ -19,6 +22,10 @@ interface DetailProp {
 const CafeDatail = () => {
   const { state }: DetailProp = useLocation();
   const [map, setMap] = useState(null);
+  const [session, setSession] = useRecoilState(sessionState);
+  const [heart, setHeart] = useState(
+    session.user?.hearts.includes(state.place.id) ? true : false
+  );
   useEffect(() => {
     const mapContainer = document.getElementById("kakao-detail-map"); // 지도를 표시할 div
     const mapOption = {
@@ -52,6 +59,28 @@ const CafeDatail = () => {
       marker.setMap(map);
     }
   }, [map]);
+  useEffect(() => {
+    if (session.loggedIn) {
+    }
+    return;
+  }, []);
+  const onHeartClick = async () => {
+    if (session.loggedIn) {
+      const data = { ...session.user, ...state.place };
+      await fetch("http://localhost:8000/api/heart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          setSession({ loggedIn: true, user: json });
+        });
+      setHeart((pre) => !pre);
+    } else {
+      console.log("login pls");
+    }
+  };
   return (
     <>
       <div>
@@ -71,6 +100,9 @@ const CafeDatail = () => {
                   )}.${state.place.distance.slice(1, 3)}km`
                 : `${state.place.distance}m`}
             </span>
+          </div>
+          <div onClick={onHeartClick}>
+            <FontAwesomeIcon icon={faHeart} color={heart ? "red" : "gray"} />
           </div>
         </div>
         <ul>
