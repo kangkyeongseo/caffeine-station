@@ -9,7 +9,20 @@ interface CafeProp {
 const Cafe = ({ place }: CafeProp) => {
   return (
     <li>
-      <Link to={`/cafe/${place.id}`} state={{ place }}>
+      <Link
+        to={`/cafe/${place.id}`}
+        state={{
+          id: place.id,
+          x: place.x,
+          y: place.y,
+          place_name: place.place_name,
+          place_url: place.place_url,
+          distance: place.distance,
+          road_address_name: place.road_address_name,
+          address_name: place.address_name,
+          phone: place.phone,
+        }}
+      >
         <span>{place.place_name}</span>
         <span>{place.road_address_name}</span>
         <span>{place.phone}</span>

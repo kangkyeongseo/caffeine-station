@@ -36,19 +36,41 @@ export const postLogin: RequestHandler = async (req, res) => {
   });
 };
 
-export const getSession: RequestHandler = (req, res) => {};
+export const getSession: RequestHandler = (req, res) => {
+  console.log(req.session);
+};
 
 export const postHeart: RequestHandler = async (req, res) => {
   const {
-    body: { _id, id },
+    body: {
+      _id,
+      id,
+      x,
+      y,
+      place_name,
+      place_url,
+      distance,
+      road_address_name,
+      address_name,
+      phone,
+    },
   } = req;
   const user = await User.findById(_id);
   if (user) {
-    if (user.hearts.includes(id)) {
-      const index = user.hearts.indexOf(id);
-      user.hearts.splice(index, 1);
+    if (user.cafes.filter((cafe) => cafe.id).length > 0) {
+      user.cafes = user.cafes.filter((cafe) => cafe.id !== id);
     } else {
-      user.hearts.push(id);
+      user.cafes.push({
+        id,
+        x,
+        y,
+        place_name,
+        place_url,
+        distance,
+        road_address_name,
+        address_name,
+        phone,
+      });
     }
     user.save();
     req.session.user = user;

@@ -15,7 +15,15 @@ import { kakao } from "../App";
 
 interface DetailProp {
   state: {
-    place: Place;
+    id: string;
+    x: string;
+    y: string;
+    place_name: string;
+    place_url: string;
+    distance: string;
+    road_address_name: string;
+    address_name: string;
+    phone: string;
   };
 }
 
@@ -24,12 +32,16 @@ const CafeDatail = () => {
   const [map, setMap] = useState(null);
   const [session, setSession] = useRecoilState(sessionState);
   const [heart, setHeart] = useState(
-    session.user?.hearts.includes(state.place.id) ? true : false
+    session.user &&
+      session.user.cafes.filter((cafe) => cafe.id === state.id).length > 0
+      ? true
+      : false
   );
+
   useEffect(() => {
     const mapContainer = document.getElementById("kakao-detail-map"); // 지도를 표시할 div
     const mapOption = {
-      center: new kakao.maps.LatLng(state.place.y, state.place.x), // 지도의 중심좌표
+      center: new kakao.maps.LatLng(state.y, state.x), // 지도의 중심좌표
       level: 3, // 지도의 확대 레벨
     };
     // 지도를 생성합니다
@@ -46,10 +58,7 @@ const CafeDatail = () => {
         imageSize,
         imageOption
       );
-      const markerPosition = new kakao.maps.LatLng(
-        state.place.y,
-        state.place.x
-      );
+      const markerPosition = new kakao.maps.LatLng(state.y, state.x);
       // 마커를 생성합니다
       const marker = new kakao.maps.Marker({
         position: markerPosition,
@@ -66,7 +75,7 @@ const CafeDatail = () => {
   }, []);
   const onHeartClick = async () => {
     if (session.loggedIn) {
-      const data = { ...session.user, ...state.place };
+      const data = { ...session.user, ...state };
       await fetch("http://localhost:8000/api/heart", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -84,21 +93,21 @@ const CafeDatail = () => {
   return (
     <>
       <div>
-        <h3>{state.place.place_name}</h3>
+        <h3>{state.place_name}</h3>
         <div>
           <div>
             <FontAwesomeIcon icon={faInfo} />
-            <a href={state.place.place_url}>상세정보</a>
+            <a href={state.place_url}>상세정보</a>
           </div>
           <div>
             <FontAwesomeIcon icon={faRoad} />
             <span>
-              {state.place.distance.length > 3
-                ? `${state.place.distance.slice(
-                    0,
-                    1
-                  )}.${state.place.distance.slice(1, 3)}km`
-                : `${state.place.distance}m`}
+              {state.distance.length > 3
+                ? `${state.distance.slice(0, 1)}.${state.distance.slice(
+                    1,
+                    3
+                  )}km`
+                : `${state.distance}m`}
             </span>
           </div>
           <div onClick={onHeartClick}>
@@ -108,12 +117,12 @@ const CafeDatail = () => {
         <ul>
           <li>
             <FontAwesomeIcon icon={faMapMarked} />
-            <span>{state.place.road_address_name}</span>
-            <span>{state.place.address_name}</span>
+            <span>{state.road_address_name}</span>
+            <span>{state.address_name}</span>
           </li>
           <li>
             <FontAwesomeIcon icon={faPhone} />
-            <span>{state.place.phone ? state.place.phone : "-"}</span>
+            <span>{state.phone ? state.phone : "-"}</span>
           </li>
         </ul>
         <div id="kakao-detail-map" style={{ width: 400, height: 400 }}></div>

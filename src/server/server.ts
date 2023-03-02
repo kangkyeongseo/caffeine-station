@@ -22,7 +22,7 @@ app.get("/", (req, res) =>
   res.sendFile(path.join(process.cwd(), "build/index.html"))
 );
  */
-app.use(cors());
+app.use(cors({ credentials: true, origin: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
@@ -30,7 +30,7 @@ app.use(
     secret: "secret",
     resave: true,
     saveUninitialized: false,
-    cookie: { secure: false },
+    cookie: { secure: true },
     store: MongoStore.create({
       mongoUrl: "mongodb://127.0.0.1:27017/caffeine-station",
     }),
