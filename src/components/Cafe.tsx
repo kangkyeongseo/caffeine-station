@@ -3,33 +3,51 @@ import { Link } from "react-router-dom";
 import { Place } from "./KakaoMap";
 
 interface CafeProp {
-  place: Place;
+  id: string;
+  x: string;
+  y: string;
+  place_name: string;
+  place_url: string;
+  distance: string;
+  road_address_name: string;
+  address_name: string;
+  phone: string;
 }
 
-const Cafe = ({ place }: CafeProp) => {
+const Cafe = ({
+  id,
+  x,
+  y,
+  place_name,
+  place_url,
+  distance,
+  road_address_name,
+  address_name,
+  phone,
+}: CafeProp) => {
   return (
     <li>
       <Link
-        to={`/cafe/${place.id}`}
+        to={`/cafe/${id}`}
         state={{
-          id: place.id,
-          x: place.x,
-          y: place.y,
-          place_name: place.place_name,
-          place_url: place.place_url,
-          distance: place.distance,
-          road_address_name: place.road_address_name,
-          address_name: place.address_name,
-          phone: place.phone,
+          id: id,
+          x: x,
+          y: y,
+          place_name: place_name,
+          place_url: place_url,
+          distance: distance,
+          road_address_name: road_address_name,
+          address_name: address_name,
+          phone: phone,
         }}
       >
-        <span>{place.place_name}</span>
-        <span>{place.road_address_name}</span>
-        <span>{place.phone}</span>
+        <span>{place_name}</span>
+        <span>{road_address_name}</span>
+        <span>{phone}</span>
         <div>
-          {place.distance.length > 3
-            ? `${place.distance.slice(0, 1)}.${place.distance.slice(1, 3)}km`
-            : `${place.distance}m`}
+          {distance.length > 3
+            ? `${distance.slice(0, 1)}.${distance.slice(1, 3)}km`
+            : `${distance}m`}
         </div>
       </Link>
     </li>
