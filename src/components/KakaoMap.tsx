@@ -82,6 +82,7 @@ const KakaoMap = ({
       center: new kakao.maps.LatLng(location.lat, location.lon), // 지도의 중심좌표
       level: 3, // 지도의 확대 레벨
     };
+
     // 지도를 생성합니다
     setMap(new kakao.maps.Map(mapContainer, mapOption));
     setLatlng(new kakao.maps.LatLng(location.lat, location.lon));

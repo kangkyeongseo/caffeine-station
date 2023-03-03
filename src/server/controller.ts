@@ -79,3 +79,7 @@ export const postHeart: RequestHandler = async (req, res) => {
     return res.sendStatus(400);
   }
 };
+
+export const postLogout: RequestHandler = (req, res) => {
+  req.session.destroy(() => res.end());
+};

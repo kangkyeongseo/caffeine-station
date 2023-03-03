@@ -1,14 +1,20 @@
 import { sessionState } from "Atom";
-import Cafe from "components/Cafe";
-import React from "react";
 import { useRecoilState } from "recoil";
+import Cafe from "components/Cafe";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [session, setSession] = useRecoilState(sessionState);
-  console.log(session);
+  const navigate = useNavigate();
+  const onLogout = async () => {
+    setSession({ loggedIn: false, user: null });
+    navigate("/");
+    await fetch("http://localhost:8000/api/logout");
+  };
   return (
     <div>
       <span>{session.user?.userId}</span>
+      <div onClick={onLogout}>Logout</div>
       {session.user?.cafes.map((cafe) => (
         <Cafe
           key={cafe.id}
