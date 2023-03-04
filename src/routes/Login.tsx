@@ -19,7 +19,7 @@ const Login = () => {
   const [session, setSassion] = useRecoilState(sessionState);
   const navigate = useNavigate();
   const onValid = async (data: Form) => {
-    const json = await fetch("http://localhost:8000/api/login", {
+    const json = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),

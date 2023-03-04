@@ -1,6 +1,5 @@
 import User from "../db/User";
 import { RequestHandler } from "express";
-import { async } from "q";
 
 export const postJoin: RequestHandler = async (req, res) => {
   const {
@@ -36,9 +35,7 @@ export const postLogin: RequestHandler = async (req, res) => {
   });
 };
 
-export const getSession: RequestHandler = (req, res) => {
-  console.log(req.session);
-};
+export const getSession: RequestHandler = (req, res) => {};
 
 export const postHeart: RequestHandler = async (req, res) => {
   const {

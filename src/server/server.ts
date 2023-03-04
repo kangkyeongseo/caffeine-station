@@ -21,8 +21,9 @@ const PORT = 8000;
 app.get("/", (req, res) =>
   res.sendFile(path.join(process.cwd(), "build/index.html"))
 );
- */
 app.use(cors({ credentials: true, origin: true }));
+ */
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
@@ -30,17 +31,22 @@ app.use(
     secret: "secret",
     resave: true,
     saveUninitialized: false,
-    cookie: { secure: true },
     store: MongoStore.create({
       mongoUrl: "mongodb://127.0.0.1:27017/caffeine-station",
     }),
   })
 );
+app.use((req, res, next) => {
+  req.sessionStore.all!((error, sessions) => {
+    next();
+  });
+});
 
 app.get("/", (req, res) => {
   console.log(req.session.id);
   res.end();
 });
+
 app.use("/api", apiRouter);
 
 app.listen(PORT, () => console.log(`Listening on http://localhost${PORT}`));
