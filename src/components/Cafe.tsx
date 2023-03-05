@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 import { Place } from "./KakaoMap";
 
 interface CafeProp {
@@ -14,6 +15,60 @@ interface CafeProp {
   phone: string;
 }
 
+const Container = styled.li`
+  height: 60px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0px;
+  margin-bottom: 10px;
+  padding: 15px;
+  a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+    div:last-child span {
+      background-color: #e76f51;
+    }
+  }
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const PlaceName = styled.span`
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.9);
+`;
+
+const AddressName = styled.span`
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-top: 5px;
+`;
+
+const PhoneNumber = styled.span`
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.9);
+  margin-top: 10px;
+`;
+
+const Distance = styled.span`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f4a261;
+  color: white;
+  width: 60px;
+  height: 60px;
+  border-radius: 100%;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+`;
+
 const Cafe = ({
   id,
   x,
@@ -26,7 +81,7 @@ const Cafe = ({
   phone,
 }: CafeProp) => {
   return (
-    <li>
+    <Container>
       <Link
         to={`/cafe/${id}`}
         state={{
@@ -41,16 +96,20 @@ const Cafe = ({
           phone: phone,
         }}
       >
-        <span>{place_name}</span>
-        <span>{road_address_name}</span>
-        <span>{phone}</span>
-        <div>
-          {distance.length > 3
-            ? `${distance.slice(0, 1)}.${distance.slice(1, 3)}km`
-            : `${distance}m`}
-        </div>
+        <Column>
+          <PlaceName>{place_name}</PlaceName>
+          <AddressName>{road_address_name}</AddressName>
+          <PhoneNumber>{phone}</PhoneNumber>
+        </Column>
+        <Column>
+          <Distance>
+            {distance.length > 3
+              ? `${distance.slice(0, 1)}.${distance.slice(1, 3)}km`
+              : `${distance}m`}
+          </Distance>
+        </Column>
       </Link>
-    </li>
+    </Container>
   );
 };
 

@@ -40,7 +40,7 @@ const Map = styled.div`
 const Lists = styled.ul`
   width: 460px;
   margin: 0 auto;
-  margin-top: 30px;
+  margin-top: 15px;
 `;
 
 const KakaoMap = ({
