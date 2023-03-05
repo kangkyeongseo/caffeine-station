@@ -1,6 +1,7 @@
 import { locationState } from "Atom";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 import { kakao } from "../App";
 import Cafe from "./Cafe";
 
@@ -25,6 +26,22 @@ export interface Place {
   x: string;
   y: string;
 }
+
+const Container = styled.div`
+  margin-top: 20px;
+`;
+
+const Map = styled.div`
+  width: 460px;
+  height: 460px;
+  margin: 0 auto;
+`;
+
+const Lists = styled.ul`
+  width: 460px;
+  margin: 0 auto;
+  margin-top: 30px;
+`;
 
 const KakaoMap = ({
   arr,
@@ -171,9 +188,9 @@ const KakaoMap = ({
   }, [getCenter]);
 
   return (
-    <>
-      <div id="kakao-map" style={{ width: 400, height: 400 }}></div>
-      <ul>
+    <Container>
+      <Map id="kakao-map"></Map>
+      <Lists>
         {!loading
           ? combineData
               .sort((a, b) => parseInt(a.distance) - parseInt(b.distance))
@@ -192,8 +209,8 @@ const KakaoMap = ({
                 />
               ))
           : null}
-      </ul>
-    </>
+      </Lists>
+    </Container>
   );
 };
 

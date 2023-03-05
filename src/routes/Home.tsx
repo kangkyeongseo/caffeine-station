@@ -29,10 +29,6 @@ const List = styled.li<{ clicked: number }>`
   font-weight: ${(props) => props.clicked};
 `;
 
-const MapContainer = styled.div`
-  margin-top: 20px;
-`;
-
 const Home = () => {
   const location = useRecoilValue(locationState);
   const [loading, setLoading] = useState(true);
@@ -84,9 +80,7 @@ const Home = () => {
           고가
         </List>
       </Lists>
-      <MapContainer>
-        {!loading ? <KakaoMap arr={arr} /> : <span>Loading</span>}
-      </MapContainer>
+      {!loading ? <KakaoMap arr={arr} /> : <span>Loading</span>}
     </Container>
   );
 };
