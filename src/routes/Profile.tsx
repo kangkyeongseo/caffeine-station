@@ -9,7 +9,10 @@ const Profile = () => {
   const onLogout = async () => {
     setSession({ loggedIn: false, user: null });
     navigate("/");
-    await fetch("http://localhost:8000/api/logout");
+    await fetch("http://localhost:8000/api/logout", {
+      method: "POST",
+      credentials: "include",
+    });
   };
   return (
     <div>

@@ -6,7 +6,7 @@ import styled from "styled-components";
 const Navigation = styled.nav`
   max-width: 480px;
   margin: 0 auto;
-  background-color: #f4a261;
+  background-color: #246653;
   color: #ffffff;
   font-size: 16px;
 `;
@@ -24,7 +24,7 @@ const List = styled.li`
     align-items: center;
     height: 40px;
     &:hover {
-      background-color: #e76f51;
+      background-color: #144235;
     }
   }
 `;

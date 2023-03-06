@@ -27,6 +27,12 @@ const Lists = styled.ul`
 const List = styled.li<{ clicked: number }>`
   color: rgba(0, 0, 0, 0.9);
   font-weight: ${(props) => props.clicked};
+  cursor: pointer;
+`;
+
+const Loading = styled.div`
+  text-align: center;
+  margin-top: 200px;
 `;
 
 const Home = () => {
@@ -80,7 +86,7 @@ const Home = () => {
           고가
         </List>
       </Lists>
-      {!loading ? <KakaoMap arr={arr} /> : <span>Loading</span>}
+      {!loading ? <KakaoMap arr={arr} /> : <Loading>Loading</Loading>}
     </Container>
   );
 };

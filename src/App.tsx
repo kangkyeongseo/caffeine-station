@@ -1,4 +1,5 @@
 import { Location, locationState, sessionState } from "Atom";
+import { response } from "express";
 import React, { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import AppRouter from "./components/Router";
@@ -24,7 +25,16 @@ function App() {
       });
   };
   const getSession = async () => {
-    await fetch("http://localhost:8000/api/session");
+    const response = await fetch("http://localhost:8000/api/session", {
+      credentials: "include",
+    }).then((response) => response.json());
+    console.log(response);
+    if (response.session.loggedIn) {
+      setSession({
+        loggedIn: response.session.loggedIn,
+        user: response.session.user,
+      });
+    }
   };
   useEffect(() => {
     getLocation();

@@ -29,7 +29,7 @@ const Container = styled.li`
   &:hover {
     background-color: rgba(0, 0, 0, 0.02);
     div:last-child span {
-      background-color: #e76f51;
+      background-color: #144235;
     }
   }
 `;
@@ -61,7 +61,7 @@ const Distance = styled.span`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f4a261;
+  background-color: #246653;
   color: white;
   width: 60px;
   height: 60px;

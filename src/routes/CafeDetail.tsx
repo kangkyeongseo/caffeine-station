@@ -80,6 +80,7 @@ const CafeDatail = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: "include",
       })
         .then((response) => response.json())
         .then((json) => {
