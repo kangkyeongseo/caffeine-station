@@ -6,6 +6,7 @@ import styled from "styled-components";
 const Navigation = styled.nav`
   max-width: 480px;
   margin: 0 auto;
+  margin-top: 30px;
   background-color: #246653;
   color: #ffffff;
   font-size: 16px;
@@ -22,7 +23,7 @@ const List = styled.li`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 40px;
+    height: 50px;
     &:hover {
       background-color: #144235;
     }
