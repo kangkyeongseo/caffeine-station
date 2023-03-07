@@ -3,11 +3,54 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 
 interface Form {
   id: string;
   password: string;
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 480px;
+  margin: 0 auto;
+  background-color: #ffffff;
+`;
+
+const Title = styled.h1`
+  font-size: 22px;
+  margin-top: 70px;
+`;
+
+const Form = styled.form`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px;
+  margin-top: 30px;
+  input {
+    padding: 10px;
+    margin-bottom: 5px;
+    &:focus {
+      outline: none;
+    }
+  }
+  input:last-child {
+    color: white;
+    border: none;
+    background-color: #246653;
+    &:hover {
+      background-color: #144235;
+    }
+  }
+`;
+
+const Join = styled.div`
+  margin-top: 30px;
+  margin-bottom: 70px;
+`;
 
 const Login = () => {
   const {
@@ -36,8 +79,9 @@ const Login = () => {
     }
   };
   return (
-    <>
-      <form onSubmit={handleSubmit(onValid)}>
+    <Container>
+      <Title>로그인</Title>
+      <Form onSubmit={handleSubmit(onValid)}>
         <input
           {...register("id", { required: "Write here" })}
           type="text"
@@ -50,11 +94,13 @@ const Login = () => {
           placeholder="Password"
         />
         {errors.password?.message}
-        <input type="submit" placeholder="Login" />
-      </form>
+        <input type="submit" value="Login" />
+      </Form>
       {loginMessage}
-      <Link to="/join">Join</Link>
-    </>
+      <Join>
+        <Link to="/join">Join</Link>
+      </Join>
+    </Container>
   );
 };
 

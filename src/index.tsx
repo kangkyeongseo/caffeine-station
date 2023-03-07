@@ -48,12 +48,15 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-a {
-  color: inherit;
-  text-decoration: none;
+*{
+	 box-sizing: border-box;
 }
 body {
 	background-color: rgba(0,0,0,0.3);
+}
+a {
+  color: inherit;
+  text-decoration: none;
 }
 `;
 
