@@ -16,12 +16,12 @@ const Container = styled.div`
   align-items: center;
   max-width: 480px;
   margin: 0 auto;
+  padding: 70px 0px;
   background-color: #ffffff;
 `;
 
 const Title = styled.h1`
-  font-size: 22px;
-  margin-top: 70px;
+  font-size: 22px; ;
 `;
 
 const Form = styled.form`
@@ -49,7 +49,6 @@ const Form = styled.form`
 
 const Join = styled.div`
   margin-top: 30px;
-  margin-bottom: 70px;
 `;
 
 const Login = () => {
