@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [session, setSession] = useRecoilState(sessionState);
+  console.log(session);
   const navigate = useNavigate();
   const onLogout = async () => {
     setSession({ loggedIn: false, user: null });

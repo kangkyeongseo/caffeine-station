@@ -16,15 +16,13 @@ interface CafeProp {
 }
 
 const Container = styled.li`
-  height: 60px;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 0px;
   margin-bottom: 10px;
-  padding: 15px;
   a {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 20px;
   }
   &:hover {
     background-color: rgba(0, 0, 0, 0.02);

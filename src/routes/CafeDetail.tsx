@@ -7,10 +7,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sessionState } from "Atom";
-import { Place } from "components/KakaoMap";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 import { kakao } from "../App";
 
 interface DetailProp {
@@ -26,6 +26,87 @@ interface DetailProp {
     phone: string;
   };
 }
+
+const Container = styled.div`
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 30px 0px;
+  background-color: #ffffff;
+`;
+
+const Header = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 30px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+`;
+
+const Title = styled.h1`
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 1px;
+`;
+
+const HeaderInfo = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 70%;
+  margin-top: 20px;
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+`;
+
+const Anckor = styled.a`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const Text = styled.span`
+  font-size: 12px;
+`;
+
+const InfoContainer = styled.div`
+  margin-bottom: 20px;
+  padding: 0 30px;
+`;
+
+const SubTitle = styled.h3`
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 10px;
+`;
+
+const Info = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+`;
+
+const InfoColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const InfoText = styled.span`
+  font-size: 15px;
+  margin-bottom: 3px;
+`;
+
+const Map = styled.div`
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
+`;
 
 const CafeDatail = () => {
   const { state }: DetailProp = useLocation();
@@ -92,43 +173,48 @@ const CafeDatail = () => {
     }
   };
   return (
-    <>
-      <div>
-        <h3>{state.place_name}</h3>
-        <div>
-          <div>
-            <FontAwesomeIcon icon={faInfo} />
-            <a href={state.place_url}>상세정보</a>
-          </div>
-          <div>
-            <FontAwesomeIcon icon={faRoad} />
-            <span>
+    <Container>
+      <Header>
+        <Title>{state.place_name}</Title>
+        <HeaderInfo>
+          <Column>
+            <Anckor href={state.place_url}>
+              <FontAwesomeIcon icon={faInfo} color={"#144235"} />
+              <Text>상세정보</Text>
+            </Anckor>
+          </Column>
+          <Column>
+            <FontAwesomeIcon icon={faRoad} color={"#144235"} />
+            <Text>
               {state.distance.length > 3
                 ? `${state.distance.slice(0, 1)}.${state.distance.slice(
                     1,
                     3
                   )}km`
                 : `${state.distance}m`}
-            </span>
-          </div>
-          <div onClick={onHeartClick}>
+            </Text>
+          </Column>
+          <Column onClick={onHeartClick}>
             <FontAwesomeIcon icon={faHeart} color={heart ? "red" : "gray"} />
-          </div>
-        </div>
-        <ul>
-          <li>
-            <FontAwesomeIcon icon={faMapMarked} />
-            <span>{state.road_address_name}</span>
-            <span>{state.address_name}</span>
-          </li>
-          <li>
-            <FontAwesomeIcon icon={faPhone} />
-            <span>{state.phone ? state.phone : "-"}</span>
-          </li>
-        </ul>
-        <div id="kakao-detail-map" style={{ width: 400, height: 400 }}></div>
-      </div>
-    </>
+          </Column>
+        </HeaderInfo>
+      </Header>
+      <InfoContainer>
+        <SubTitle>상세정보</SubTitle>
+        <Info>
+          <FontAwesomeIcon icon={faMapMarked} color={"#144235"} />
+          <InfoColumn>
+            <InfoText>{state.road_address_name}</InfoText>
+            <Text>{state.address_name}</Text>
+          </InfoColumn>
+        </Info>
+        <Info>
+          <FontAwesomeIcon icon={faPhone} color={"#144235"} />
+          <InfoText>{state.phone ? state.phone : "-"}</InfoText>
+        </Info>
+      </InfoContainer>
+      <Map id="kakao-detail-map"></Map>
+    </Container>
   );
 };
 
