@@ -56,7 +56,8 @@ export const postHeart: RequestHandler = async (req, res) => {
   } = req;
   const user = await User.findById(_id);
   if (user) {
-    if (user.cafes.filter((cafe) => cafe.id).length > 0) {
+    console.log(user);
+    if (user.cafes.filter((cafe) => cafe.id === id).length > 0) {
       user.cafes = user.cafes.filter((cafe) => cafe.id !== id);
     } else {
       user.cafes.push({

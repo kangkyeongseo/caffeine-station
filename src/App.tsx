@@ -28,7 +28,6 @@ function App() {
     const response = await fetch("http://localhost:8000/api/session", {
       credentials: "include",
     }).then((response) => response.json());
-    console.log(response);
     if (response.session.loggedIn) {
       setSession({
         loggedIn: response.session.loggedIn,
