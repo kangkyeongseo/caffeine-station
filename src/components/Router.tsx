@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CafeDatail from "routes/CafeDetail";
+import ChangePassword from "routes/ChangePassword";
 import Home from "routes/Home";
 import Join from "routes/Join";
 import Login from "routes/Login";
@@ -17,6 +18,7 @@ const AppRouter = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/join" element={<Join />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/change-password" element={<ChangePassword />}></Route>
         <Route path="/cafe/:id" element={<CafeDatail />} />
       </Routes>
     </Router>

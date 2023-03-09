@@ -85,3 +85,26 @@ export const postHeart: RequestHandler = async (req, res) => {
 export const postLogout: RequestHandler = (req, res) => {
   req.session.destroy(() => res.end());
 };
+
+export const postPassword: RequestHandler = async (req, res) => {
+  const {
+    body: { existingPassword, changingPassword },
+    session: { user },
+  } = req;
+  if (!user) {
+    return res.json({ ok: false, message: "login pls" });
+  }
+  const loginUser = await User.findById(user._id);
+  const comparePassword = await bcrypt.compare(
+    existingPassword,
+    loginUser!.password
+  );
+  if (!comparePassword) {
+    return res.json({ ok: false, message: "password dose not compare" });
+  }
+  loginUser!.password = changingPassword;
+  await loginUser!.save();
+  req.session.destroy(() => {
+    return res.json({ ok: true, message: "change password" });
+  });
+};

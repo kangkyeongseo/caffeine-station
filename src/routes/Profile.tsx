@@ -1,7 +1,7 @@
 import { sessionState } from "Atom";
 import { useRecoilState } from "recoil";
 import Cafe from "components/Cafe";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -46,7 +46,6 @@ const SubTitle = styled.h3`
 
 const Profile = () => {
   const [session, setSession] = useRecoilState(sessionState);
-  console.log(session);
   const navigate = useNavigate();
   const onLogout = async () => {
     setSession({ loggedIn: false, user: null });
@@ -61,7 +60,9 @@ const Profile = () => {
       <Title>프로필</Title>
       <Name>{session.user?.userId}</Name>
       <Text onClick={onLogout}>로그아웃</Text>
-      <Text>비밀번호 변경</Text>
+      <Text>
+        <Link to={"/change-password"}>비밀번호 변경</Link>
+      </Text>
       <Lists>
         <SubTitle>나의 카페</SubTitle>
         {session.user?.cafes.map((cafe) => (

@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 
 export interface User {
+  _id: string;
   userId: string;
   password: string;
   cafes: Cafe[];
