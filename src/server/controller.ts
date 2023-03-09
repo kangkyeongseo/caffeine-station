@@ -1,5 +1,6 @@
 import User from "../db/User";
 import { RequestHandler } from "express";
+import bcrypt from "bcrypt";
 
 export const postJoin: RequestHandler = async (req, res) => {
   const {
@@ -24,7 +25,8 @@ export const postLogin: RequestHandler = async (req, res) => {
   if (!user) {
     return res.json({ ok: false, message: "ID does not exist" });
   }
-  if (user?.password !== password) {
+  const passwordOk = await bcrypt.compare(password, user.password);
+  if (!passwordOk) {
     return res.json({ ok: false, message: "Password does not match" });
   }
   req.session.loggedIn = true;
