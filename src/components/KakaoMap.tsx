@@ -7,7 +7,6 @@ import Cafe from "./Cafe";
 
 interface prop {
   arr: string[];
-  isSearching?: boolean;
   newPlace?: string | null;
   getCenter?: boolean;
 }
@@ -26,7 +25,6 @@ export interface Place {
   x: string;
   y: string;
 }
-
 const Container = styled.div`
   margin-top: 20px;
 `;
@@ -43,24 +41,19 @@ const Lists = styled.ul`
   margin-top: 15px;
 `;
 
-const KakaoMap = ({
-  arr,
-  isSearching = false,
-  newPlace = null,
-  getCenter = false,
-}: prop) => {
+const KakaoMap = ({ arr, newPlace = null, getCenter = false }: prop) => {
   const [location, setLocation] = useRecoilState(locationState);
   const [loading, setLoading] = useState(true);
   const [combineData, setCombineDate] = useState<Place[]>([]);
-  const [placeSearching, setPlaceSearching] = useState(isSearching);
+  const [placeSearching, setPlaceSearching] = useState(false);
   const [map, setMap] = useState<any>(null);
   const [latlng, setLatlng] = useState(null);
-  const [newCenter, setNewCenter] = useState(getCenter);
-  const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
   // 장소 검색 객체를 생성합니다
   const ps = new kakao.maps.services.Places();
+  // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
+  const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
   // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-  const placesSearchCB = (data: Place[], status: any) => {
+  const placesSearchCB = (data: Place[], status: number) => {
     if (status === kakao.maps.services.Status.OK && placeSearching) {
       setLocation({
         lat: Number(data[0].y),
@@ -82,14 +75,12 @@ const KakaoMap = ({
   };
 
   const startSearch = async () => {
-    await Promise.all(
-      arr.map((keyword) => {
-        ps.keywordSearch(keyword, placesSearchCB, {
-          location: latlng,
-          sort: "distance",
-        });
-      })
-    );
+    arr.map((keyword) => {
+      ps.keywordSearch(keyword, placesSearchCB, {
+        location: latlng,
+        sort: "distance",
+      });
+    });
     setLoading(false);
   };
 
@@ -99,33 +90,32 @@ const KakaoMap = ({
       center: new kakao.maps.LatLng(location.lat, location.lon), // 지도의 중심좌표
       level: 3, // 지도의 확대 레벨
     };
-
     // 지도를 생성합니다
     setMap(new kakao.maps.Map(mapContainer, mapOption));
     setLatlng(new kakao.maps.LatLng(location.lat, location.lon));
   }, [location]);
 
   useEffect(() => {
+    if (!map) return;
     if (map && !placeSearching) startSearch();
-    if (map) {
-      const imageSrc = `${process.env.PUBLIC_URL}/marker.png`; // 마커이미지의 주소입니다
-      const imageSize = new kakao.maps.Size(30, 42); // 마커이미지의 크기입니다
-      const imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
-      // 마커가 표시될 위치입니다
-      const markerImage = new kakao.maps.MarkerImage(
-        imageSrc,
-        imageSize,
-        imageOption
-      );
-      const markerPosition = new kakao.maps.LatLng(location.lat, location.lon);
-      // 마커를 생성합니다
-      const marker = new kakao.maps.Marker({
-        position: markerPosition,
-        image: markerImage,
-      });
-      // 마커가 지도 위에 표시되도록 설정합니다
-      marker.setMap(map);
-    }
+    //사용자 위치 마커
+    const imageSrc = `${process.env.PUBLIC_URL}/marker.png`; // 마커이미지의 주소입니다
+    const imageSize = new kakao.maps.Size(30, 42); // 마커이미지의 크기입니다
+    const imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+    // 마커가 표시될 위치입니다
+    const markerImage = new kakao.maps.MarkerImage(
+      imageSrc,
+      imageSize,
+      imageOption
+    );
+    const markerPosition = new kakao.maps.LatLng(location.lat, location.lon);
+    // 마커를 생성합니다
+    const marker = new kakao.maps.Marker({
+      position: markerPosition,
+      image: markerImage,
+    });
+    // 마커가 지도 위에 표시되도록 설정합니다
+    marker.setMap(map);
   }, [map]);
 
   useEffect(() => {

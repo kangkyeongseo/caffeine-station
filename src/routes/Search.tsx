@@ -1,7 +1,8 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { locationState } from "Atom";
+import { locationState, storeState } from "Atom";
 import KakaoMap from "components/KakaoMap";
+import PriceNav from "components/PriceNav";
 import React, { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
@@ -40,19 +41,6 @@ const Button = styled.button`
   border: none;
 `;
 
-const Lists = styled.ul`
-  display: flex;
-  gap: 20px;
-  font-weight: lighter;
-  margin-left: 20px;
-`;
-
-const List = styled.li<{ clicked: number }>`
-  color: rgba(0, 0, 0, 0.9);
-  font-weight: ${(props) => props.clicked};
-  cursor: pointer;
-`;
-
 const PlaceBtn = styled.button`
   margin-left: 380px;
   font-size: 12px;
@@ -72,13 +60,12 @@ const Loading = styled.div`
 `;
 
 const Search = () => {
+  const store = useRecoilValue(storeState);
   const location = useRecoilValue(locationState);
   const [loading, setLoading] = useState(true);
   const [searchingPlace, setSearchingPlace] = useState("");
   const [newPlace, setNewPlace] = useState("");
-  const [arr, setArr] = useState(coffeePrice.low);
   const [getCenter, setGetCenter] = useState(false);
-  const [price, setPrice] = useState("low");
   const onChange = (event: React.FormEvent<HTMLInputElement>) => {
     const {
       currentTarget: { value },
@@ -97,32 +84,12 @@ const Search = () => {
   }, [location]);
 
   useEffect(() => {
-    if (location.lat) {
-      setLoading(false);
-    }
-  }, [arr]);
-
-  useEffect(() => {
     if (getCenter) {
       setLoading(true);
       setGetCenter(false);
       setLoading(false);
     }
   }, [getCenter]);
-
-  const onPriceClick = (price: string) => {
-    setLoading(true);
-    if (price === "low") {
-      setArr(coffeePrice.low);
-      setPrice("low");
-    } else if (price === "middle") {
-      setArr(coffeePrice.middle);
-      setPrice("middle");
-    } else {
-      setArr(coffeePrice.high);
-      setPrice("high");
-    }
-  };
 
   const onClick = () => {
     setGetCenter(true);
@@ -137,28 +104,9 @@ const Search = () => {
         </Button>
       </Form>
       <PlaceBtn onClick={onClick}>이 지역 재검색</PlaceBtn>
-      <Lists>
-        <List
-          onClick={() => onPriceClick("low")}
-          clicked={price === "low" ? 500 : 300}
-        >
-          저가
-        </List>
-        <List
-          onClick={() => onPriceClick("middle")}
-          clicked={price === "middle" ? 500 : 300}
-        >
-          중가
-        </List>
-        <List
-          onClick={() => onPriceClick("high")}
-          clicked={price === "high" ? 500 : 300}
-        >
-          고가
-        </List>
-      </Lists>
-      {!loading ? (
-        <KakaoMap arr={arr} newPlace={newPlace} getCenter={getCenter} />
+      <PriceNav />
+      {!loading && !store.loading ? (
+        <KakaoMap arr={store.arr} newPlace={newPlace} getCenter={getCenter} />
       ) : (
         <Loading>Loading</Loading>
       )}

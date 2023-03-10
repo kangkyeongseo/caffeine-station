@@ -37,7 +37,7 @@ export const postLogin: RequestHandler = async (req, res) => {
 };
 
 export const getSession: RequestHandler = (req, res) => {
-  return res.send({ session: req.session });
+  return res.json({ session: req.session });
 };
 
 export const postHeart: RequestHandler = async (req, res) => {
