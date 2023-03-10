@@ -1,6 +1,6 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Location, locationState } from "Atom";
+import { locationState } from "Atom";
 import KakaoMap from "components/KakaoMap";
 import React, { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";

@@ -1,8 +1,8 @@
-import { Location, locationState, sessionState } from "Atom";
-import { response } from "express";
-import React, { useEffect } from "react";
+import { locationState, sessionState } from "Atom";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import AppRouter from "./components/Router";
+import useCurrentLocation from "libs/useCurrentLocation";
 
 export const { kakao } = window;
 
@@ -15,15 +15,7 @@ declare global {
 function App() {
   const [location, setLocation] = useRecoilState(locationState);
   const [session, setSession] = useRecoilState(sessionState);
-  const getLocation = () => {
-    if (navigator.geolocation)
-      navigator.geolocation.getCurrentPosition((position) => {
-        setLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        });
-      });
-  };
+  const { loading, location: currentLocation } = useCurrentLocation();
   const getSession = async () => {
     const response = await fetch("http://localhost:8000/api/session", {
       credentials: "include",
@@ -35,10 +27,15 @@ function App() {
       });
     }
   };
+
   useEffect(() => {
-    getLocation();
     getSession();
   }, []);
+
+  useEffect(() => {
+    if (!loading)
+      setLocation({ lat: currentLocation.lat, lon: currentLocation.lon });
+  }, [loading]);
 
   return <AppRouter />;
 }

@@ -73,19 +73,19 @@ const Home = () => {
           onClick={() => onPriceClick("low")}
           clicked={price === "low" ? 500 : 300}
         >
-          저가
+          가성비
         </List>
         <List
           onClick={() => onPriceClick("middle")}
           clicked={price === "middle" ? 500 : 300}
         >
-          중가
+          브랜드
         </List>
         <List
           onClick={() => onPriceClick("high")}
           clicked={price === "high" ? 500 : 300}
         >
-          고가
+          프리미언
         </List>
       </Lists>
       {!loading ? <KakaoMap arr={arr} /> : <Loading>Loading</Loading>}
