@@ -25,6 +25,11 @@ export const locationState = atom<Location>({
   default: { lat: null, lon: null },
 });
 
+export const searchLocationState = atom<Location>({
+  key: "searchLocationState",
+  default: { lat: null, lon: null },
+});
+
 export const sessionState = atom<Session>({
   key: "sessionState",
   default: { loggedIn: false, user: null },

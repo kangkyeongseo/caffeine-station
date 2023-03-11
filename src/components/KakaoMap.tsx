@@ -1,4 +1,4 @@
-import { locationState } from "Atom";
+import { Location, locationState, searchLocationState } from "Atom";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
@@ -7,6 +7,7 @@ import Cafe from "./Cafe";
 
 interface prop {
   arr: string[];
+  location: Location;
   newPlace?: string | null;
   getCenter?: boolean;
 }
@@ -49,13 +50,20 @@ const NoCafe = styled.span`
   margin: 50px 0px;
 `;
 
-const KakaoMap = ({ arr, newPlace = null, getCenter = false }: prop) => {
-  const [location, setLocation] = useRecoilState(locationState);
+const KakaoMap = ({
+  arr,
+  location,
+  newPlace = null,
+  getCenter = false,
+}: prop) => {
+  const [mapLocation, setMapLocation] = useState(location);
   const [loading, setLoading] = useState(true);
   const [combineData, setCombineDate] = useState<Place[]>([]);
   const [placeSearching, setPlaceSearching] = useState(false);
   const [map, setMap] = useState<any>(null);
   const [latlng, setLatlng] = useState(null);
+  const [searchLocation, setSearchLocation] =
+    useRecoilState(searchLocationState);
   // 장소 검색 객체를 생성합니다
   const ps = new kakao.maps.services.Places();
   // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
@@ -63,7 +71,11 @@ const KakaoMap = ({ arr, newPlace = null, getCenter = false }: prop) => {
   // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
   const placesSearchCB = (data: Place[], status: number) => {
     if (status === kakao.maps.services.Status.OK && placeSearching) {
-      setLocation({
+      setMapLocation({
+        lat: Number(data[0].y),
+        lon: Number(data[0].x),
+      });
+      setSearchLocation({
         lat: Number(data[0].y),
         lon: Number(data[0].x),
       });
@@ -81,7 +93,7 @@ const KakaoMap = ({ arr, newPlace = null, getCenter = false }: prop) => {
       return;
     }
   };
-
+  //카패를 찾습니다
   const startSearch = async () => {
     arr.map((keyword) => {
       ps.keywordSearch(keyword, placesSearchCB, {
@@ -91,18 +103,18 @@ const KakaoMap = ({ arr, newPlace = null, getCenter = false }: prop) => {
     });
     setLoading(false);
   };
-
+  //카카오지도를 생성합니다
   useEffect(() => {
     const mapContainer = document.getElementById("kakao-map"); // 지도를 표시할 div
     const mapOption = {
-      center: new kakao.maps.LatLng(location.lat, location.lon), // 지도의 중심좌표
+      center: new kakao.maps.LatLng(mapLocation.lat, mapLocation.lon), // 지도의 중심좌표
       level: 3, // 지도의 확대 레벨
     };
     // 지도를 생성합니다
     setMap(new kakao.maps.Map(mapContainer, mapOption));
-    setLatlng(new kakao.maps.LatLng(location.lat, location.lon));
-  }, [location]);
-
+    setLatlng(new kakao.maps.LatLng(mapLocation.lat, mapLocation.lon));
+  }, [mapLocation]);
+  //지도가 존재할시 카페를 찾습니다 또한 지정된 위치에 마커를 표시합니다
   useEffect(() => {
     if (!map) return;
     if (map && !placeSearching) startSearch();
@@ -116,7 +128,10 @@ const KakaoMap = ({ arr, newPlace = null, getCenter = false }: prop) => {
       imageSize,
       imageOption
     );
-    const markerPosition = new kakao.maps.LatLng(location.lat, location.lon);
+    const markerPosition = new kakao.maps.LatLng(
+      mapLocation.lat,
+      mapLocation.lon
+    );
     // 마커를 생성합니다
     const marker = new kakao.maps.Marker({
       position: markerPosition,
@@ -125,7 +140,7 @@ const KakaoMap = ({ arr, newPlace = null, getCenter = false }: prop) => {
     // 마커가 지도 위에 표시되도록 설정합니다
     marker.setMap(map);
   }, [map]);
-
+  //Search 페이지에서 새로운 장소를 받을시 실행합니다.
   useEffect(() => {
     if (placeSearching) {
       setCombineDate([]);
@@ -133,11 +148,11 @@ const KakaoMap = ({ arr, newPlace = null, getCenter = false }: prop) => {
       setPlaceSearching(false);
     }
   }, [placeSearching]);
-
+  //Search 페이지에서 새로운 장소를 받을시 실행합니다.
   useEffect(() => {
     if (newPlace && newPlace.length > 0) setPlaceSearching(true);
   }, [newPlace]);
-
+  //카페의 마커를 표시합니다
   useEffect(() => {
     if (!loading) {
       const displayMarkers = () => {
@@ -173,12 +188,16 @@ const KakaoMap = ({ arr, newPlace = null, getCenter = false }: prop) => {
       displayMarkers();
     }
   }, [combineData]);
-
+  //새로운 중앙값을 구해 위치를 지정합니다.
   useEffect(() => {
     if (getCenter) {
       setCombineDate([]);
       const center = map.getCenter();
-      setLocation({
+      setMapLocation({
+        lat: Number(center.Ma),
+        lon: Number(center.La),
+      });
+      setSearchLocation({
         lat: Number(center.Ma),
         lon: Number(center.La),
       });

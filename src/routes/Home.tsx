@@ -38,7 +38,7 @@ const Home = () => {
     <Container>
       <PriceNav />
       {!loading && !store.loading ? (
-        <KakaoMap arr={store.arr} />
+        <KakaoMap arr={store.arr} location={location} />
       ) : (
         <Loading>Loading</Loading>
       )}

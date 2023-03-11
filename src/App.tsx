@@ -1,4 +1,4 @@
-import { locationState, sessionState } from "Atom";
+import { locationState, searchLocationState, sessionState } from "Atom";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import AppRouter from "./components/Router";
@@ -14,6 +14,8 @@ declare global {
 
 function App() {
   const [location, setLocation] = useRecoilState(locationState);
+  const [searchlocation, setSearchLocation] =
+    useRecoilState(searchLocationState);
   const [session, setSession] = useRecoilState(sessionState);
   const { loading, location: currentLocation } = useCurrentLocation();
   const getSession = async () => {
@@ -34,6 +36,7 @@ function App() {
   useEffect(() => {
     if (!loading)
       setLocation({ lat: currentLocation.lat, lon: currentLocation.lon });
+    setSearchLocation({ lat: currentLocation.lat, lon: currentLocation.lon });
   }, [loading]);
 
   return <AppRouter />;

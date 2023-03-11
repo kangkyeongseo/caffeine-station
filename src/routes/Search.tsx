@@ -1,6 +1,6 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { locationState, storeState } from "Atom";
+import { locationState, searchLocationState, storeState } from "Atom";
 import KakaoMap from "components/KakaoMap";
 import PriceNav from "components/PriceNav";
 import React, { useEffect, useState } from "react";
@@ -61,7 +61,7 @@ const Loading = styled.div`
 
 const Search = () => {
   const store = useRecoilValue(storeState);
-  const location = useRecoilValue(locationState);
+  const location = useRecoilValue(searchLocationState);
   const [loading, setLoading] = useState(true);
   const [searchingPlace, setSearchingPlace] = useState("");
   const [newPlace, setNewPlace] = useState("");
@@ -106,7 +106,12 @@ const Search = () => {
       <PlaceBtn onClick={onClick}>이 지역 재검색</PlaceBtn>
       <PriceNav />
       {!loading && !store.loading ? (
-        <KakaoMap arr={store.arr} newPlace={newPlace} getCenter={getCenter} />
+        <KakaoMap
+          arr={store.arr}
+          location={location}
+          newPlace={newPlace}
+          getCenter={getCenter}
+        />
       ) : (
         <Loading>Loading</Loading>
       )}
