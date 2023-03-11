@@ -1,4 +1,5 @@
 import { Location, locationState, searchLocationState } from "Atom";
+import useCafe from "libs/useCafe";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
@@ -64,11 +65,13 @@ const KakaoMap = ({
   const [latlng, setLatlng] = useState(null);
   const [searchLocation, setSearchLocation] =
     useRecoilState(searchLocationState);
+  const { cafes, startSearch } = useCafe({ arr, latlng, placeSearching });
+  console.log(cafes);
   // 장소 검색 객체를 생성합니다
   const ps = new kakao.maps.services.Places();
   // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-  // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
+  /* // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
   const placesSearchCB = (data: Place[], status: number) => {
     if (status === kakao.maps.services.Status.OK && placeSearching) {
       setMapLocation({
@@ -102,8 +105,17 @@ const KakaoMap = ({
       });
     });
     setLoading(false);
-  };
+  }; */
   //카카오지도를 생성합니다
+  useEffect(() => {
+    cafes.forEach((cafe) => {
+      if (parseInt(cafe.distance) < 1200) {
+        setCombineDate((pre) => [...pre, cafe]);
+      }
+    });
+    setLoading(false);
+  }, [cafes]);
+
   useEffect(() => {
     const mapContainer = document.getElementById("kakao-map"); // 지도를 표시할 div
     const mapOption = {
@@ -144,7 +156,7 @@ const KakaoMap = ({
   useEffect(() => {
     if (placeSearching) {
       setCombineDate([]);
-      ps.keywordSearch(newPlace, placesSearchCB);
+      /* ps.keywordSearch(newPlace, placesSearchCB); */
       setPlaceSearching(false);
     }
   }, [placeSearching]);
