@@ -1,6 +1,11 @@
-import { locationState, searchLocationState, sessionState } from "Atom";
+import {
+  locationState,
+  mapLocationState,
+  searchLocationState,
+  sessionState,
+} from "Atom";
 import { useEffect } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import AppRouter from "./components/Router";
 import useCurrentLocation from "libs/useCurrentLocation";
 
@@ -13,10 +18,10 @@ declare global {
 }
 
 function App() {
-  const [location, setLocation] = useRecoilState(locationState);
-  const [searchlocation, setSearchLocation] =
-    useRecoilState(searchLocationState);
-  const [session, setSession] = useRecoilState(sessionState);
+  const setLocation = useSetRecoilState(locationState);
+  const setSearchLocation = useSetRecoilState(searchLocationState);
+  const setMapLocation = useSetRecoilState(mapLocationState);
+  const setSession = useSetRecoilState(sessionState);
   const { loading, location: currentLocation } = useCurrentLocation();
   const getSession = async () => {
     const response = await fetch("http://localhost:8000/api/session", {
@@ -37,6 +42,7 @@ function App() {
     if (!loading)
       setLocation({ lat: currentLocation.lat, lon: currentLocation.lon });
     setSearchLocation({ lat: currentLocation.lat, lon: currentLocation.lon });
+    setMapLocation({ lat: currentLocation.lat, lon: currentLocation.lon });
   }, [loading]);
 
   return <AppRouter />;

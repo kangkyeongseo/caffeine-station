@@ -1,4 +1,9 @@
-import { Location, locationState, searchLocationState } from "Atom";
+import {
+  Location,
+  locationState,
+  mapLocationState,
+  searchLocationState,
+} from "Atom";
 import useCafe from "libs/useCafe";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
@@ -57,7 +62,6 @@ const KakaoMap = ({
   newPlace = null,
   getCenter = false,
 }: prop) => {
-  const [mapLocation, setMapLocation] = useState(location);
   const [loading, setLoading] = useState(true);
   const [combineData, setCombineDate] = useState<Place[]>([]);
   const [placeSearching, setPlaceSearching] = useState(false);
@@ -65,8 +69,14 @@ const KakaoMap = ({
   const [latlng, setLatlng] = useState(null);
   const [searchLocation, setSearchLocation] =
     useRecoilState(searchLocationState);
-  const { cafes, startSearch } = useCafe({ arr, latlng, placeSearching });
-  console.log(cafes);
+  const [mapLocation, setMapLocation] = useRecoilState(mapLocationState);
+  const { cafes, startSearch } = useCafe({
+    arr,
+    latlng,
+    newPlace,
+    placeSearching,
+  });
+  console.log("making map");
   // 장소 검색 객체를 생성합니다
   const ps = new kakao.maps.services.Places();
   // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
@@ -156,6 +166,7 @@ const KakaoMap = ({
   useEffect(() => {
     if (placeSearching) {
       setCombineDate([]);
+      startSearch();
       /* ps.keywordSearch(newPlace, placesSearchCB); */
       setPlaceSearching(false);
     }
