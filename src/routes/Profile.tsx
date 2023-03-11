@@ -32,6 +32,9 @@ const Text = styled.span`
 `;
 
 const Lists = styled.ul`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 460px;
   margin: 0 auto;
   margin-top: 50px;
@@ -42,6 +45,11 @@ const SubTitle = styled.h3`
   font-weight: 500;
   margin-left: 10px;
   margin-bottom: 10px;
+`;
+
+const NoCafe = styled.span`
+  display: block;
+  margin: 50px 0px;
 `;
 
 const Profile = () => {
@@ -65,20 +73,24 @@ const Profile = () => {
       </Text>
       <Lists>
         <SubTitle>나의 카페</SubTitle>
-        {session.user?.cafes.map((cafe) => (
-          <Cafe
-            key={cafe.id}
-            id={cafe.id}
-            x={cafe.x}
-            y={cafe.y}
-            place_name={cafe.place_name}
-            place_url={cafe.place_url}
-            distance={cafe.distance}
-            road_address_name={cafe.road_address_name}
-            address_name={cafe.address_name}
-            phone={cafe.phone}
-          />
-        ))}
+        {session.user?.cafes && session.user?.cafes.length > 0 ? (
+          session.user?.cafes.map((cafe) => (
+            <Cafe
+              key={cafe.id}
+              id={cafe.id}
+              x={cafe.x}
+              y={cafe.y}
+              place_name={cafe.place_name}
+              place_url={cafe.place_url}
+              distance={cafe.distance}
+              road_address_name={cafe.road_address_name}
+              address_name={cafe.address_name}
+              phone={cafe.phone}
+            />
+          ))
+        ) : (
+          <NoCafe>찜한 카페가 존재하지 않습니다.</NoCafe>
+        )}
       </Lists>
     </Container>
   );

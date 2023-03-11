@@ -16,6 +16,7 @@ interface CafeProp {
 }
 
 const Container = styled.li`
+  width: 100%;
   border: 1px solid rgba(0, 0, 0, 0.2);
   margin-bottom: 10px;
   a {
