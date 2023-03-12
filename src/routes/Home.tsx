@@ -5,6 +5,7 @@ import { locationState, storeState } from "Atom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import PriceNav from "components/PriceNav";
+import Loader from "components/Loader";
 
 export const coffeePrice = {
   low: ["메가커피", "컴포즈커피", "메머드커피", "빽다방", "더벤티"],
@@ -18,11 +19,6 @@ const Container = styled.div`
   padding: 20px 0px;
   margin-bottom: 30px;
   background-color: #ffffff;
-`;
-
-const Loading = styled.div`
-  text-align: center;
-  margin-top: 200px;
 `;
 
 const Home = () => {
@@ -40,7 +36,7 @@ const Home = () => {
       {!loading && !store.loading ? (
         <KakaoMap arr={store.arr} location={location} />
       ) : (
-        <Loading>Loading</Loading>
+        <Loader />
       )}
     </Container>
   );

@@ -2,6 +2,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { locationState, searchLocationState, storeState } from "Atom";
 import KakaoMap from "components/KakaoMap";
+import Loader from "components/Loader";
 import PriceNav from "components/PriceNav";
 import React, { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -52,11 +53,6 @@ const PlaceBtn = styled.button`
   &:hover {
     background-color: #144235;
   }
-`;
-
-const Loading = styled.div`
-  text-align: center;
-  margin-top: 200px;
 `;
 
 const Search = () => {
@@ -113,7 +109,7 @@ const Search = () => {
           getCenter={getCenter}
         />
       ) : (
-        <Loading>Loading</Loading>
+        <Loader />
       )}
     </Container>
   );

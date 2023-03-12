@@ -6,7 +6,7 @@ import {
 } from "Atom";
 import useCafe from "libs/useCafe";
 import { useEffect, useState } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { kakao } from "../App";
 import Cafe from "./Cafe";
@@ -68,9 +68,8 @@ const KakaoMap = ({
   const [placeSearching, setPlaceSearching] = useState(false);
   const [map, setMap] = useState<any>(null);
   const [latlng, setLatlng] = useState(null);
-  const [searchLocation, setSearchLocation] =
-    useRecoilState(searchLocationState);
   const [mapLocation, setMapLocation] = useRecoilState(mapLocationState);
+  const setSearchLocation = useSetRecoilState(searchLocationState);
   const { cafes, startSearch } = useCafe({
     arr,
     latlng,
@@ -94,7 +93,6 @@ const KakaoMap = ({
   }, [cafes]);
   //카카오지도를 생성합니다
   useEffect(() => {
-    console.log(mapLocation);
     const mapContainer = document.getElementById("kakao-map"); // 지도를 표시할 div
     const mapOption = {
       center: new kakao.maps.LatLng(mapLocation.lat, mapLocation.lon), // 지도의 중심좌표
