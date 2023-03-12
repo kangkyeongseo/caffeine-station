@@ -1,11 +1,11 @@
-import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 export interface User {
   _id: string;
   userId: string;
   password: string;
-  cafes: Cafe[];
+  cafes: mongoose.Schema.Types.ObjectId;
 }
 
 interface Cafe {
@@ -20,28 +20,16 @@ interface Cafe {
   phone: string;
 }
 
-const userSchema = new Schema<User>({
+const userSchema = new mongoose.Schema<User>({
   userId: { type: String, required: true },
   password: { type: String, required: true },
-  cafes: [
-    {
-      id: { type: String },
-      x: { type: String },
-      y: { type: String },
-      place_name: { type: String },
-      place_url: { type: String },
-      distance: { type: String },
-      road_address_name: { type: String },
-      address_name: { type: String },
-      phone: { type: String },
-    },
-  ],
+  cafes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Cafe" }],
 });
 
 userSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 5);
 });
 
-const User = model<User>("User", userSchema);
+const User = mongoose.model<User>("User", userSchema);
 
 export default User;

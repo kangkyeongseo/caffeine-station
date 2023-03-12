@@ -41,7 +41,6 @@ export const getSession: RequestHandler = (req, res) => {
 };
 
 export const postHeart: RequestHandler = async (req, res) => {
-  console.log(req.session);
   const {
     body: {
       _id,
