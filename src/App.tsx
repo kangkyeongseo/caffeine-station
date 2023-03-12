@@ -39,10 +39,10 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!loading)
+    if (!loading) {
       setLocation({ lat: currentLocation.lat, lon: currentLocation.lon });
-    setSearchLocation({ lat: currentLocation.lat, lon: currentLocation.lon });
-    setMapLocation({ lat: currentLocation.lat, lon: currentLocation.lon });
+      setSearchLocation({ lat: currentLocation.lat, lon: currentLocation.lon });
+    }
   }, [loading]);
 
   return <AppRouter />;

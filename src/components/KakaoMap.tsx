@@ -32,6 +32,7 @@ export interface Place {
   x: string;
   y: string;
 }
+
 const Container = styled.div`
   margin-top: 20px;
 `;
@@ -76,47 +77,13 @@ const KakaoMap = ({
     newPlace,
     placeSearching,
   });
-  console.log("making map");
-  // 장소 검색 객체를 생성합니다
-  const ps = new kakao.maps.services.Places();
   // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-  /* // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-  const placesSearchCB = (data: Place[], status: number) => {
-    if (status === kakao.maps.services.Status.OK && placeSearching) {
-      setMapLocation({
-        lat: Number(data[0].y),
-        lon: Number(data[0].x),
-      });
-      setSearchLocation({
-        lat: Number(data[0].y),
-        lon: Number(data[0].x),
-      });
-    } else if (status === kakao.maps.services.Status.OK) {
-      data.forEach((cafe) => {
-        if (parseInt(cafe.distance) < 1200) {
-          setCombineDate((pre) => [...pre, cafe]);
-        }
-      });
-    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-      alert("검색 결과가 존재하지 않습니다.");
-      return;
-    } else if (status === kakao.maps.services.Status.ERROR) {
-      alert("검색 결과 중 오류가 발생했습니다.");
-      return;
-    }
-  };
-  //카패를 찾습니다
-  const startSearch = async () => {
-    arr.map((keyword) => {
-      ps.keywordSearch(keyword, placesSearchCB, {
-        location: latlng,
-        sort: "distance",
-      });
-    });
-    setLoading(false);
-  }; */
-  //카카오지도를 생성합니다
+
+  useEffect(() => {
+    setMapLocation({ lat: location.lat, lon: location.lon });
+  }, [location]);
+
   useEffect(() => {
     cafes.forEach((cafe) => {
       if (parseInt(cafe.distance) < 1200) {
@@ -125,8 +92,9 @@ const KakaoMap = ({
     });
     setLoading(false);
   }, [cafes]);
-
+  //카카오지도를 생성합니다
   useEffect(() => {
+    console.log(mapLocation);
     const mapContainer = document.getElementById("kakao-map"); // 지도를 표시할 div
     const mapOption = {
       center: new kakao.maps.LatLng(mapLocation.lat, mapLocation.lon), // 지도의 중심좌표
