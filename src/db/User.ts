@@ -2,22 +2,10 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
 export interface User {
-  _id: string;
+  _id: mongoose.Schema.Types.ObjectId;
   userId: string;
   password: string;
-  cafes: mongoose.Schema.Types.ObjectId;
-}
-
-interface Cafe {
-  id: string;
-  x: string;
-  y: string;
-  place_name: string;
-  place_url: string;
-  distance: string;
-  road_address_name: string;
-  address_name: string;
-  phone: string;
+  cafes: mongoose.Schema.Types.ObjectId[];
 }
 
 const userSchema = new mongoose.Schema<User>({

@@ -3,6 +3,8 @@ import { useRecoilState } from "recoil";
 import Cafe from "components/Cafe";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { ICafe } from "db/Cafe";
 
 const Container = styled.div`
   display: flex;
@@ -54,6 +56,8 @@ const NoCafe = styled.span`
 
 const Profile = () => {
   const [session, setSession] = useRecoilState(sessionState);
+  const [cafes, setCafes] = useState<ICafe[]>([]);
+  console.log(cafes);
   const navigate = useNavigate();
   const onLogout = async () => {
     setSession({ loggedIn: false, user: null });
@@ -63,6 +67,15 @@ const Profile = () => {
       credentials: "include",
     });
   };
+  const getCafes = async () => {
+    const response = await fetch("http://localhost:8000/api/cafes", {
+      credentials: "include",
+    }).then((response) => response.json());
+    setCafes(response.cafes);
+  };
+  useEffect(() => {
+    getCafes();
+  }, []);
   return (
     <Container>
       <Title>프로필</Title>
@@ -73,8 +86,8 @@ const Profile = () => {
       </Text>
       <Lists>
         <SubTitle>나의 카페</SubTitle>
-        {session.user?.cafes && session.user?.cafes.length > 0 ? (
-          session.user?.cafes.map((cafe) => (
+        {cafes && cafes.length > 0 ? (
+          cafes.map((cafe) => (
             <Cafe
               key={cafe.id}
               id={cafe.id}

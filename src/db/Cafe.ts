@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
-interface Cafe {
+export interface ICafe {
+  _id: mongoose.Schema.Types.ObjectId;
   id: string;
   x: string;
   y: string;
@@ -10,22 +11,22 @@ interface Cafe {
   road_address_name: string;
   address_name: string;
   phone: string;
-  hearts: mongoose.Schema.Types.ObjectId;
+  hearts: string[];
 }
 
-const CafeSchema = new mongoose.Schema<Cafe>({
-  id: { type: "string", require: true },
-  x: { type: "string", require: true },
-  y: { type: "string", require: true },
-  place_name: { type: "string", require: true },
-  place_url: { type: "string", require: true },
-  distance: { type: "string", require: true },
-  road_address_name: { type: "string", require: true },
-  address_name: { type: "string", require: true },
-  phone: { type: "string", require: true },
-  hearts: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+const CafeSchema = new mongoose.Schema<ICafe>({
+  id: { type: String, require: true },
+  x: { type: String, require: true },
+  y: { type: String, require: true },
+  place_name: { type: String, require: true },
+  place_url: { type: String, require: true },
+  distance: { type: String, require: true },
+  road_address_name: { type: String, require: true },
+  address_name: { type: String, require: true },
+  phone: { type: String, require: true },
+  hearts: [{ type: String }],
 });
 
-const Cafe = mongoose.model<Cafe>("Cafe", CafeSchema);
+const Cafe = mongoose.model<ICafe>("Cafe", CafeSchema, "cafes");
 
 export default Cafe;

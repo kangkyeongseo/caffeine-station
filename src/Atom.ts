@@ -8,11 +8,7 @@ export interface Location {
 
 export interface Session {
   loggedIn: boolean;
-  user: UserWithId | null;
-}
-
-interface UserWithId extends User {
-  _id: string;
+  user: User | null;
 }
 
 interface Store {

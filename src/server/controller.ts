@@ -1,6 +1,8 @@
 import User from "../db/User";
+import Cafe from "../db/Cafe";
 import { RequestHandler } from "express";
 import bcrypt from "bcrypt";
+import type { ICafe } from "../db/Cafe";
 
 export const postJoin: RequestHandler = async (req, res) => {
   const {
@@ -40,10 +42,23 @@ export const getSession: RequestHandler = (req, res) => {
   return res.json({ session: req.session });
 };
 
+export const getHeart: RequestHandler = async (req, res) => {
+  if (!req.session.user) return;
+  const {
+    params: { id },
+    session: {
+      user: { _id },
+    },
+  } = req;
+  const cafe = await Cafe.findOne({ id });
+  const ok = cafe?.hearts.includes(String(_id));
+  res.json({ ok });
+};
+
 export const postHeart: RequestHandler = async (req, res) => {
+  if (!req.session.user) return;
   const {
     body: {
-      _id,
       id,
       x,
       y,
@@ -54,31 +69,47 @@ export const postHeart: RequestHandler = async (req, res) => {
       address_name,
       phone,
     },
+    session: {
+      user: { _id },
+    },
   } = req;
+  const cafe = await Cafe.findOne({ id });
   const user = await User.findById(_id);
-  if (user) {
-    console.log(user);
-    if (user.cafes.filter((cafe) => cafe.id === id).length > 0) {
-      user.cafes = user.cafes.filter((cafe) => cafe.id !== id);
-    } else {
-      user.cafes.push({
-        id,
-        x,
-        y,
-        place_name,
-        place_url,
-        distance,
-        road_address_name,
-        address_name,
-        phone,
-      });
-    }
-    user.save();
-    req.session.user = user;
+  if (!cafe && user) {
+    const newCafe = await Cafe.create({
+      id,
+      x,
+      y,
+      place_name,
+      place_url,
+      distance,
+      road_address_name,
+      address_name,
+      phone,
+    });
+    newCafe?.hearts.push(String(_id));
+    await newCafe.save();
+    user?.cafes.push(newCafe._id);
+    await user?.save();
+    console.log(newCafe, user);
     return res.json(user);
-  } else {
-    return res.sendStatus(400);
   }
+  const heartExist = cafe?.hearts.includes(String(_id));
+  if (!heartExist) {
+    cafe?.hearts.push(String(_id));
+    await cafe?.save();
+    user?.cafes.push(cafe!._id);
+    await user?.save();
+  } else {
+    const index = cafe?.hearts.indexOf(String(_id));
+    cafe?.hearts.splice(index!, 1);
+    await cafe?.save();
+    const cafeIndex = user?.cafes.indexOf(cafe!._id);
+    user?.cafes.splice(cafeIndex!, 1);
+    await user?.save();
+  }
+  if (user) req.session.user = user;
+  return res.json(user);
 };
 
 export const postLogout: RequestHandler = (req, res) => {
@@ -106,4 +137,16 @@ export const postPassword: RequestHandler = async (req, res) => {
   req.session.destroy(() => {
     return res.json({ ok: true, message: "change password" });
   });
+};
+
+export const getCafes: RequestHandler = async (req, res) => {
+  const {
+    session: { user },
+  } = req;
+  let cafes: ICafe[] = [];
+  for (const value of user!.cafes) {
+    const findCafe = await Cafe.findById(value);
+    if (findCafe) cafes.push(findCafe);
+  }
+  res.json({ cafes });
 };

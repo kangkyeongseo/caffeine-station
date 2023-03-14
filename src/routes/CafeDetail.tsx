@@ -8,7 +8,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { sessionState } from "Atom";
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { kakao } from "../App";
@@ -112,13 +112,19 @@ const CafeDatail = () => {
   const { state }: DetailProp = useLocation();
   const [map, setMap] = useState(null);
   const [session, setSession] = useRecoilState(sessionState);
-  const [heart, setHeart] = useState(
-    session.user &&
-      session.user.cafes.filter((cafe) => cafe.id === state.id).length > 0
-      ? true
-      : false
-  );
-
+  const [heart, setHeart] = useState(false);
+  const getHeart = async () => {
+    const response = await fetch(
+      `http://localhost:8000/api/heart/${state.id}`,
+      {
+        credentials: "include",
+      }
+    ).then((response) => response.json());
+    setHeart(response.ok);
+  };
+  useEffect(() => {
+    getHeart();
+  }, []);
   useEffect(() => {
     const mapContainer = document.getElementById("kakao-detail-map"); // 지도를 표시할 div
     const mapOption = {
