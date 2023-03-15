@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export interface ICafe {
-  _id: mongoose.Schema.Types.ObjectId;
+  _id?: mongoose.Schema.Types.ObjectId;
   id: string;
   x: string;
   y: string;
@@ -11,7 +11,7 @@ export interface ICafe {
   road_address_name: string;
   address_name: string;
   phone: string;
-  hearts: string[];
+  hearts?: string[];
 }
 
 const CafeSchema = new mongoose.Schema<ICafe>({

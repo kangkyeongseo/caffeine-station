@@ -4,6 +4,7 @@ import {
   mapLocationState,
   searchLocationState,
 } from "Atom";
+import { ICafe } from "db/Cafe";
 import useCafe from "libs/useCafe";
 import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -64,7 +65,7 @@ const KakaoMap = ({
   getCenter = false,
 }: prop) => {
   const [loading, setLoading] = useState(true);
-  const [combineData, setCombineDate] = useState<Place[]>([]);
+  const [combineData, setCombineDate] = useState<ICafe[]>([]);
   const [placeSearching, setPlaceSearching] = useState(false);
   const [map, setMap] = useState<any>(null);
   const [latlng, setLatlng] = useState(null);
@@ -157,7 +158,7 @@ const KakaoMap = ({
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
         map.setBounds(bounds);
       };
-      const displayMarker = (place: Place) => {
+      const displayMarker = (place: ICafe) => {
         // 마커를 생성하고 지도에 표시합니다
         const marker = new kakao.maps.Marker({
           map: map,
@@ -200,20 +201,7 @@ const KakaoMap = ({
         {!loading && combineData.length > 1 ? (
           combineData
             .sort((a, b) => parseInt(a.distance) - parseInt(b.distance))
-            .map((cafe) => (
-              <Cafe
-                key={cafe.id}
-                id={cafe.id}
-                x={cafe.x}
-                y={cafe.y}
-                place_name={cafe.place_name}
-                place_url={cafe.place_url}
-                distance={cafe.distance}
-                road_address_name={cafe.road_address_name}
-                address_name={cafe.address_name}
-                phone={cafe.phone}
-              />
-            ))
+            .map((cafe) => <Cafe cafe={cafe} />)
         ) : (
           <NoCafe>근처에 선택한 카페가 존재하지 않습니다.</NoCafe>
         )}

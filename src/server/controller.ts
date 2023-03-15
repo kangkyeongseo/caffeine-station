@@ -51,7 +51,7 @@ export const getHeart: RequestHandler = async (req, res) => {
     },
   } = req;
   const cafe = await Cafe.findOne({ id });
-  const ok = cafe?.hearts.includes(String(_id));
+  const ok = cafe?.hearts?.includes(String(_id));
   res.json({ ok });
 };
 
@@ -87,22 +87,22 @@ export const postHeart: RequestHandler = async (req, res) => {
       address_name,
       phone,
     });
-    newCafe?.hearts.push(String(_id));
+    newCafe?.hearts?.push(String(_id));
     await newCafe.save();
     user?.cafes.push(newCafe._id);
     await user?.save();
     console.log(newCafe, user);
     return res.json(user);
   }
-  const heartExist = cafe?.hearts.includes(String(_id));
+  const heartExist = cafe?.hearts?.includes(String(_id));
   if (!heartExist) {
-    cafe?.hearts.push(String(_id));
+    cafe?.hearts?.push(String(_id));
     await cafe?.save();
     user?.cafes.push(cafe!._id);
     await user?.save();
   } else {
-    const index = cafe?.hearts.indexOf(String(_id));
-    cafe?.hearts.splice(index!, 1);
+    const index = cafe?.hearts?.indexOf(String(_id));
+    cafe?.hearts?.splice(index!, 1);
     await cafe?.save();
     const cafeIndex = user?.cafes.indexOf(cafe!._id);
     user?.cafes.splice(cafeIndex!, 1);

@@ -87,20 +87,7 @@ const Profile = () => {
       <Lists>
         <SubTitle>나의 카페</SubTitle>
         {cafes && cafes.length > 0 ? (
-          cafes.map((cafe) => (
-            <Cafe
-              key={cafe.id}
-              id={cafe.id}
-              x={cafe.x}
-              y={cafe.y}
-              place_name={cafe.place_name}
-              place_url={cafe.place_url}
-              distance={cafe.distance}
-              road_address_name={cafe.road_address_name}
-              address_name={cafe.address_name}
-              phone={cafe.phone}
-            />
-          ))
+          cafes.map((cafe) => <Cafe cafe={cafe} />)
         ) : (
           <NoCafe>찜한 카페가 존재하지 않습니다.</NoCafe>
         )}

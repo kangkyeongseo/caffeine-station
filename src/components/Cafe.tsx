@@ -1,17 +1,10 @@
+import { ICafe } from "db/Cafe";
 import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-interface CafeProp {
-  id: string;
-  x: string;
-  y: string;
-  place_name: string;
-  place_url: string;
-  distance: string;
-  road_address_name: string;
-  address_name: string;
-  phone: string;
+interface Prop {
+  cafe: ICafe;
 }
 
 const Container = styled.li`
@@ -67,43 +60,20 @@ const Distance = styled.span`
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 `;
 
-const Cafe = ({
-  id,
-  x,
-  y,
-  place_name,
-  place_url,
-  distance,
-  road_address_name,
-  address_name,
-  phone,
-}: CafeProp) => {
+const Cafe = ({ cafe }: Prop) => {
   return (
     <Container>
-      <Link
-        to={`/cafe/${id}`}
-        state={{
-          id: id,
-          x: x,
-          y: y,
-          place_name: place_name,
-          place_url: place_url,
-          distance: distance,
-          road_address_name: road_address_name,
-          address_name: address_name,
-          phone: phone,
-        }}
-      >
+      <Link to={`/cafe/${cafe.id}`} state={cafe}>
         <Column>
-          <PlaceName>{place_name}</PlaceName>
-          <AddressName>{road_address_name}</AddressName>
-          <PhoneNumber>{phone}</PhoneNumber>
+          <PlaceName>{cafe.place_name}</PlaceName>
+          <AddressName>{cafe.road_address_name}</AddressName>
+          <PhoneNumber>{cafe.phone}</PhoneNumber>
         </Column>
         <Column>
           <Distance>
-            {distance.length > 3
-              ? `${distance.slice(0, 1)}.${distance.slice(1, 3)}km`
-              : `${distance}m`}
+            {cafe.distance.length > 3
+              ? `${cafe.distance.slice(0, 1)}.${cafe.distance.slice(1, 3)}km`
+              : `${cafe.distance}m`}
           </Distance>
         </Column>
       </Link>
