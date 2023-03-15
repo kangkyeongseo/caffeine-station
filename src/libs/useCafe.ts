@@ -15,7 +15,6 @@ const useCafe = ({ arr, latlng, newPlace, placeSearching }: Prop) => {
   const setSearchLocation = useSetRecoilState(searchLocationState);
   const setMapLocation = useSetRecoilState(mapLocationState);
   const [cafes, setCafes] = useState<Place[]>([]);
-  const [cafeLoading, setCafeLoading] = useState(true);
   const ps = new kakao.maps.services.Places();
 
   const startSearch = async () => {
@@ -43,7 +42,7 @@ const useCafe = ({ arr, latlng, newPlace, placeSearching }: Prop) => {
       });
       setCafes([data[0]]);
     } else if (status === kakao.maps.services.Status.OK) {
-      setCafes(data);
+      setCafes((pre) => [...pre, ...data]);
     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
       alert("검색 결과가 존재하지 않습니다.");
       return;
@@ -52,7 +51,7 @@ const useCafe = ({ arr, latlng, newPlace, placeSearching }: Prop) => {
       return;
     }
   };
-  return { cafes, cafeLoading, startSearch };
+  return { cafes, startSearch };
 };
 
 export default useCafe;

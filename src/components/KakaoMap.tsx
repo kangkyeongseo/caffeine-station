@@ -1,9 +1,4 @@
-import {
-  Location,
-  locationState,
-  mapLocationState,
-  searchLocationState,
-} from "Atom";
+import { Location, mapLocationState, searchLocationState } from "Atom";
 import { ICafe } from "db/Cafe";
 import useCafe from "libs/useCafe";
 import { useEffect, useState } from "react";
@@ -85,6 +80,8 @@ const KakaoMap = ({
   }, [location]);
 
   useEffect(() => {
+    if (cafes.length === 0) return;
+    setCombineDate([]);
     cafes.forEach((cafe) => {
       if (parseInt(cafe.distance) < 1200) {
         setCombineDate((pre) => [...pre, cafe]);
@@ -201,7 +198,7 @@ const KakaoMap = ({
         {!loading && combineData.length > 1 ? (
           combineData
             .sort((a, b) => parseInt(a.distance) - parseInt(b.distance))
-            .map((cafe) => <Cafe cafe={cafe} />)
+            .map((cafe) => <Cafe key={cafe.id} cafe={cafe} />)
         ) : (
           <NoCafe>근처에 선택한 카페가 존재하지 않습니다.</NoCafe>
         )}
