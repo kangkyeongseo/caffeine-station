@@ -64,7 +64,7 @@ const PriceNav = () => {
         onClick={() => onPriceClick("high")}
         clicked={price === "high" ? 500 : 300}
       >
-        프리미언
+        프리미엄
       </PriceList>
     </PriceLists>
   );

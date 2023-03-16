@@ -6,11 +6,13 @@ import Join from "routes/Join";
 import Login from "routes/Login";
 import Profile from "routes/Profile";
 import Search from "routes/Search";
+import Header from "./Header";
 import Nav from "./Nav";
 
 const AppRouter = () => {
   return (
     <Router>
+      <Header />
       <Nav />
       <Routes>
         <Route path="/" element={<Home />} />
