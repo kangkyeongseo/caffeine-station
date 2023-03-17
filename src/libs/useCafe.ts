@@ -1,6 +1,6 @@
 import { kakao } from "App";
 import { mapLocationState, searchLocationState } from "Atom";
-import { Place } from "components/KakaoMap";
+import { ICafe } from "db/Cafe";
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
 
@@ -14,7 +14,7 @@ interface Prop {
 const useCafe = ({ arr, latlng, newPlace, placeSearching }: Prop) => {
   const setSearchLocation = useSetRecoilState(searchLocationState);
   const setMapLocation = useSetRecoilState(mapLocationState);
-  const [cafes, setCafes] = useState<Place[]>([]);
+  const [cafes, setCafes] = useState<ICafe[]>([]);
   const ps = new kakao.maps.services.Places();
 
   const startSearch = async () => {
@@ -30,7 +30,7 @@ const useCafe = ({ arr, latlng, newPlace, placeSearching }: Prop) => {
     }
   };
 
-  const placesSearchCB = (data: Place[], status: number) => {
+  const placesSearchCB = (data: ICafe[], status: number) => {
     if (status === kakao.maps.services.Status.OK && placeSearching) {
       setMapLocation({
         lat: Number(data[0].y),

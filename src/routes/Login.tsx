@@ -51,6 +51,17 @@ const Join = styled.div`
   margin-top: 30px;
 `;
 
+const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+`;
+
+const ErrorMsg = styled.span`
+  color: #e63946;
+`;
+
 const Login = () => {
   const {
     register,
@@ -82,20 +93,22 @@ const Login = () => {
       <Title>로그인</Title>
       <Form onSubmit={handleSubmit(onValid)}>
         <input
-          {...register("id", { required: "Write here" })}
+          {...register("id", { required: "아이디를 적어주세요." })}
           type="text"
           placeholder="ID"
         />
-        {errors.id?.message}
         <input
-          {...register("password", { required: "Write here" })}
+          {...register("password", { required: "비밀번호를 적어주세요." })}
           type="password"
           placeholder="Password"
         />
-        {errors.password?.message}
         <input type="submit" value="Login" />
       </Form>
-      {loginMessage}
+      <ErrorContainer>
+        <ErrorMsg>{errors.id?.message}</ErrorMsg>
+        <ErrorMsg>{errors.password?.message}</ErrorMsg>
+        <ErrorMsg>{loginMessage}</ErrorMsg>
+      </ErrorContainer>
       <Join>
         <Link to="/join">Join</Link>
       </Join>

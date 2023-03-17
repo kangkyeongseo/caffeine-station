@@ -25,11 +25,11 @@ export const postLogin: RequestHandler = async (req, res) => {
   } = req;
   const user = await User.findOne({ userId: id });
   if (!user) {
-    return res.json({ ok: false, message: "ID does not exist" });
+    return res.json({ ok: false, message: "아이디가 존재하지 않습니다." });
   }
   const passwordOk = await bcrypt.compare(password, user.password);
   if (!passwordOk) {
-    return res.json({ ok: false, message: "Password does not match" });
+    return res.json({ ok: false, message: "비밀번호가 일치하지 않습니다." });
   }
   req.session.loggedIn = true;
   req.session.user = user;
