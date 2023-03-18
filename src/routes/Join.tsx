@@ -1,3 +1,5 @@
+import { response } from "express";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -58,6 +60,7 @@ const ErrorMsg = styled.span`
 
 const Join = () => {
   const navigate = useNavigate();
+  const [joinMessage, setJoinMessage] = useState("");
   const {
     register,
     handleSubmit,
@@ -78,9 +81,11 @@ const Join = () => {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify(data),
-    });
-    if (response.status === 200) {
+    }).then((response) => response.json());
+    if (response.ok === true) {
       navigate("/login");
+    } else {
+      setJoinMessage(response.message);
     }
   };
   return (
@@ -110,6 +115,7 @@ const Join = () => {
         <ErrorMsg>{errors.id?.message}</ErrorMsg>
         <ErrorMsg>{errors.password?.message}</ErrorMsg>
         <ErrorMsg>{errors.confirmPassword?.message}</ErrorMsg>
+        <ErrorMsg>{joinMessage}</ErrorMsg>
       </ErrorContainer>
     </Container>
   );

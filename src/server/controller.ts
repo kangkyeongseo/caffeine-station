@@ -8,6 +8,10 @@ export const postJoin: RequestHandler = async (req, res) => {
   const {
     body: { id, password },
   } = req;
+  const userExist = await User.exists({ userId: id });
+  if (userExist) {
+    return res.json({ ok: false, message: "이미 존재하는 아이디입니다." });
+  }
   try {
     await User.create({
       userId: id,
@@ -16,7 +20,7 @@ export const postJoin: RequestHandler = async (req, res) => {
   } catch {
     res.sendStatus(400);
   }
-  res.sendStatus(200);
+  res.json({ ok: true });
 };
 
 export const postLogin: RequestHandler = async (req, res) => {
