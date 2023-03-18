@@ -45,6 +45,17 @@ const Form = styled.form`
   }
 `;
 
+const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+`;
+
+const ErrorMsg = styled.span`
+  color: #e63946;
+`;
+
 const Join = () => {
   const navigate = useNavigate();
   const {
@@ -57,7 +68,7 @@ const Join = () => {
     if (data.password !== data.confirmPassword) {
       setError(
         "confirmPassword",
-        { message: "Password are not the same" },
+        { message: "비밀번호가 일치하지 않습니다." },
         { shouldFocus: true }
       );
       return;
@@ -77,25 +88,29 @@ const Join = () => {
       <Title>가입하기</Title>
       <Form onSubmit={handleSubmit(onValid)}>
         <input
-          {...register("id", { required: "write here" })}
+          {...register("id", { required: "아이디를 입력해주세요." })}
           type="text"
           placeholder="ID"
         />
-        {errors.id?.message}
         <input
-          {...register("password", { required: "write here" })}
+          {...register("password", { required: "비밀번호를 입력해주세요." })}
           type="password"
           placeholder="Password"
         />
-        {errors.password?.message}
         <input
-          {...register("confirmPassword", { required: "write here" })}
+          {...register("confirmPassword", {
+            required: "비밀번호를 입력해주세요.",
+          })}
           type="password"
           placeholder="Confirm Password"
         />
-        {errors.confirmPassword?.message}
         <input type="submit" value="가입" />
       </Form>
+      <ErrorContainer>
+        <ErrorMsg>{errors.id?.message}</ErrorMsg>
+        <ErrorMsg>{errors.password?.message}</ErrorMsg>
+        <ErrorMsg>{errors.confirmPassword?.message}</ErrorMsg>
+      </ErrorContainer>
     </Container>
   );
 };

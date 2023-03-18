@@ -93,12 +93,12 @@ const Login = () => {
       <Title>로그인</Title>
       <Form onSubmit={handleSubmit(onValid)}>
         <input
-          {...register("id", { required: "아이디를 적어주세요." })}
+          {...register("id", { required: "아이디를 입력해주세요." })}
           type="text"
           placeholder="ID"
         />
         <input
-          {...register("password", { required: "비밀번호를 적어주세요." })}
+          {...register("password", { required: "비밀번호를 입력해주세요." })}
           type="password"
           placeholder="Password"
         />
