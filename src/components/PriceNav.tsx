@@ -27,6 +27,8 @@ const PriceNav = () => {
   const [store, setStore] = useRecoilState(storeState);
   const [price, setPrice] = useState("low");
 
+  console.log(store.loading);
+
   const onPriceClick = (price: string) => {
     if (price === "low") {
       setStore({ arr: coffeePrice.low, loading: true });
@@ -44,7 +46,7 @@ const PriceNav = () => {
     if (location.lat && store.loading) {
       setStore({ ...store, loading: false });
     }
-  }, [store.arr]);
+  }, [store]);
 
   return (
     <PriceLists>
