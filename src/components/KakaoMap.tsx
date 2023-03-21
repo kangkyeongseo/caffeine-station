@@ -57,23 +57,14 @@ const KakaoMap = ({
     newPlace,
     placeSearching,
   });
+  console.log(combineData);
+
   // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-
   useEffect(() => {
     setMapLocation({ lat: location.lat, lon: location.lon });
   }, [location]);
 
-  useEffect(() => {
-    if (cafes.length === 0) return;
-    setCombineDate([]);
-    cafes.forEach((cafe) => {
-      if (parseInt(cafe.distance) < 1200) {
-        setCombineDate((pre) => [...pre, cafe]);
-      }
-    });
-    setLoading(false);
-  }, [cafes]);
   //카카오지도를 생성합니다
   useEffect(() => {
     const mapContainer = document.getElementById("kakao-map"); // 지도를 표시할 div
@@ -85,6 +76,7 @@ const KakaoMap = ({
     setMap(new kakao.maps.Map(mapContainer, mapOption));
     setLatlng(new kakao.maps.LatLng(mapLocation.lat, mapLocation.lon));
   }, [mapLocation]);
+
   //지도가 존재할시 카페를 찾습니다 또한 지정된 위치에 마커를 표시합니다
   useEffect(() => {
     if (!map) return;
@@ -111,22 +103,21 @@ const KakaoMap = ({
     // 마커가 지도 위에 표시되도록 설정합니다
     marker.setMap(map);
   }, [map]);
-  //Search 페이지에서 새로운 장소를 받을시 실행합니다.
+
+  //useCafe로 부터 카페들의 정보를 받습니다.
   useEffect(() => {
-    if (placeSearching) {
-      setCombineDate([]);
-      startSearch();
-      /* ps.keywordSearch(newPlace, placesSearchCB); */
-      setPlaceSearching(false);
-    }
-  }, [placeSearching]);
-  //Search 페이지에서 새로운 장소를 받을시 실행합니다.
-  useEffect(() => {
-    if (newPlace && newPlace.length > 0) setPlaceSearching(true);
-  }, [newPlace]);
+    setCombineDate([]);
+    cafes.forEach((cafe) => {
+      if (parseInt(cafe.distance) < 1200) {
+        setCombineDate((pre) => [...pre, cafe]);
+      }
+    });
+    setLoading(false);
+  }, [cafes]);
+
   //카페의 마커를 표시합니다
   useEffect(() => {
-    if (!loading) {
+    if (!loading && combineData.length > 0) {
       const displayMarkers = () => {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다
@@ -160,15 +151,26 @@ const KakaoMap = ({
       displayMarkers();
     }
   }, [combineData]);
+
+  //Search 페이지에서 새로운 장소를 받을시 실행합니다.
+  useEffect(() => {
+    if (placeSearching) {
+      setCombineDate([]);
+      startSearch();
+      /* ps.keywordSearch(newPlace, placesSearchCB); */
+      setPlaceSearching(false);
+    }
+  }, [placeSearching]);
+
+  //Search 페이지에서 새로운 장소를 받을시 실행합니다.
+  useEffect(() => {
+    if (newPlace && newPlace.length > 0) setPlaceSearching(true);
+  }, [newPlace]);
+
   //새로운 중앙값을 구해 위치를 지정합니다.
   useEffect(() => {
     if (getCenter) {
-      setCombineDate([]);
       const center = map.getCenter();
-      setMapLocation({
-        lat: Number(center.Ma),
-        lon: Number(center.La),
-      });
       setSearchLocation({
         lat: Number(center.Ma),
         lon: Number(center.La),

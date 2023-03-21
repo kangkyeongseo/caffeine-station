@@ -17,8 +17,9 @@ const useCafe = ({ arr, latlng, newPlace, placeSearching }: Prop) => {
   const [cafes, setCafes] = useState<ICafe[]>([]);
   const ps = new kakao.maps.services.Places();
 
-  const startSearch = async () => {
+  const startSearch = () => {
     if (!placeSearching) {
+      setCafes([]);
       arr.map((keyword) => {
         ps.keywordSearch(keyword, placesSearchCB, {
           location: latlng,

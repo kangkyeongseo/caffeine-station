@@ -1,13 +1,12 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { locationState, searchLocationState, storeState } from "Atom";
+import { searchLocationState, storeState } from "Atom";
 import KakaoMap from "components/KakaoMap";
 import Loader from "components/Loader";
 import PriceNav from "components/PriceNav";
 import React, { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { coffeePrice } from "./Home";
 
 const Container = styled.div`
   max-width: 480px;
@@ -81,9 +80,7 @@ const Search = () => {
 
   useEffect(() => {
     if (getCenter) {
-      setLoading(true);
       setGetCenter(false);
-      setLoading(false);
     }
   }, [getCenter]);
 
