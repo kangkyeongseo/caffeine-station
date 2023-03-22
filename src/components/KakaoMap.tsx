@@ -16,19 +16,21 @@ interface prop {
 
 const Container = styled.div`
   margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Map = styled.div`
-  width: 460px;
-  height: 460px;
-  margin: 0 auto;
+  width: 100%;
+  aspect-ratio: 1/1;
 `;
 
 const Lists = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 460px;
+  width: 100%;
   margin: 0 auto;
   margin-top: 15px;
 `;

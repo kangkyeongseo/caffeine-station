@@ -13,7 +13,7 @@ const PriceLists = styled.ul`
   display: flex;
   gap: 20px;
   font-weight: lighter;
-  margin-left: 20px;
+  margin-left: 10px;
 `;
 
 const PriceList = styled.li<{ clicked: number }>`

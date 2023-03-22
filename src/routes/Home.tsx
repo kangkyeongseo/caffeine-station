@@ -15,9 +15,9 @@ export const coffeePrice = {
 
 const Container = styled.div`
   max-width: 480px;
+  min-height: calc(100vh - 110px);
   margin: 0 auto;
-  padding: 20px 0px;
-  margin-bottom: 30px;
+  padding: 20px 10px;
   background-color: #ffffff;
 `;
 
