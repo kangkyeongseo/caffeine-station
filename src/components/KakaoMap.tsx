@@ -21,6 +21,22 @@ const Container = styled.div`
   align-items: center;
 `;
 
+const Range = styled.input`
+  -webkit-appearance: none;
+  border: 1px;
+  &::-webkit-slider-runnable-track {
+    border: 1px solid #246653;
+    border-radius: 10px;
+  }
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #246653;
+  }
+`;
+
 const Map = styled.div`
   width: 100%;
   aspect-ratio: 1/1;
@@ -51,6 +67,7 @@ const KakaoMap = ({
   const [placeSearching, setPlaceSearching] = useState(false);
   const [map, setMap] = useState<any>(null);
   const [latlng, setLatlng] = useState(null);
+  const [distance, setDistance] = useState(750);
   const [mapLocation, setMapLocation] = useRecoilState(mapLocationState);
   const setSearchLocation = useSetRecoilState(searchLocationState);
   const { cafes, startSearch } = useCafe({
@@ -59,7 +76,6 @@ const KakaoMap = ({
     newPlace,
     placeSearching,
   });
-  console.log(combineData);
 
   // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
@@ -110,12 +126,12 @@ const KakaoMap = ({
   useEffect(() => {
     setCombineDate([]);
     cafes.forEach((cafe) => {
-      if (parseInt(cafe.distance) < 1200) {
+      if (parseInt(cafe.distance) < distance) {
         setCombineDate((pre) => [...pre, cafe]);
       }
     });
     setLoading(false);
-  }, [cafes]);
+  }, [cafes, distance]);
 
   //카페의 마커를 표시합니다
   useEffect(() => {
@@ -180,8 +196,16 @@ const KakaoMap = ({
     }
   }, [getCenter]);
 
+  const onRangeChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const {
+      currentTarget: { value },
+    } = event;
+    setDistance(Number(value) * 15);
+  };
+
   return (
     <Container>
+      <Range type="range" onInput={onRangeChange} value={distance / 15} />
       <Map id="kakao-map"></Map>
       <Lists>
         {!loading && combineData.length > 1 ? (
