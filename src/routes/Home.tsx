@@ -21,20 +21,45 @@ const Container = styled.div`
   background-color: #ffffff;
 `;
 
+const Range = styled.input`
+  -webkit-appearance: none;
+  border: 1px;
+  &::-webkit-slider-runnable-track {
+    border: 1px solid #246653;
+    border-radius: 10px;
+  }
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #246653;
+  }
+`;
+
 const Home = () => {
   const store = useRecoilValue(storeState);
   const location = useRecoilValue(locationState);
   const [loading, setLoading] = useState(true);
+  const [distance, setDistance] = useState(750);
 
   useEffect(() => {
     if (location.lat) setLoading(false);
   }, [location]);
 
+  const onRangeChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const {
+      currentTarget: { value },
+    } = event;
+    setDistance(Number(value) * 15);
+  };
+
   return (
     <Container>
       <PriceNav />
+      <Range type="range" onInput={onRangeChange} value={distance / 15} />
       {!loading && !store.loading ? (
-        <KakaoMap arr={store.arr} location={location} />
+        <KakaoMap arr={store.arr} location={location} distance={distance} />
       ) : (
         <Loader />
       )}

@@ -12,6 +12,7 @@ interface prop {
   location: Location;
   newPlace?: string | null;
   getCenter?: boolean;
+  distance: number;
 }
 
 const Container = styled.div`
@@ -19,22 +20,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-
-const Range = styled.input`
-  -webkit-appearance: none;
-  border: 1px;
-  &::-webkit-slider-runnable-track {
-    border: 1px solid #246653;
-    border-radius: 10px;
-  }
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background: #246653;
-  }
 `;
 
 const Map = styled.div`
@@ -61,13 +46,14 @@ const KakaoMap = ({
   location,
   newPlace = null,
   getCenter = false,
+  distance,
 }: prop) => {
+  let markers: any[] = [];
   const [loading, setLoading] = useState(true);
   const [combineData, setCombineDate] = useState<ICafe[]>([]);
   const [placeSearching, setPlaceSearching] = useState(false);
   const [map, setMap] = useState<any>(null);
   const [latlng, setLatlng] = useState(null);
-  const [distance, setDistance] = useState(750);
   const [mapLocation, setMapLocation] = useRecoilState(mapLocationState);
   const setSearchLocation = useSetRecoilState(searchLocationState);
   const { cafes, startSearch } = useCafe({
@@ -76,29 +62,11 @@ const KakaoMap = ({
     newPlace,
     placeSearching,
   });
-
+  console.log(combineData);
   // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-  useEffect(() => {
-    setMapLocation({ lat: location.lat, lon: location.lon });
-  }, [location]);
 
-  //카카오지도를 생성합니다
-  useEffect(() => {
-    const mapContainer = document.getElementById("kakao-map"); // 지도를 표시할 div
-    const mapOption = {
-      center: new kakao.maps.LatLng(mapLocation.lat, mapLocation.lon), // 지도의 중심좌표
-      level: 3, // 지도의 확대 레벨
-    };
-    // 지도를 생성합니다
-    setMap(new kakao.maps.Map(mapContainer, mapOption));
-    setLatlng(new kakao.maps.LatLng(mapLocation.lat, mapLocation.lon));
-  }, [mapLocation]);
-
-  //지도가 존재할시 카페를 찾습니다 또한 지정된 위치에 마커를 표시합니다
-  useEffect(() => {
-    if (!map) return;
-    if (map && !placeSearching) startSearch();
+  const setUserMaker = () => {
     //사용자 위치 마커
     const imageSrc = `${process.env.PUBLIC_URL}/marker.png`; // 마커이미지의 주소입니다
     const imageSize = new kakao.maps.Size(30, 42); // 마커이미지의 크기입니다
@@ -120,22 +88,45 @@ const KakaoMap = ({
     });
     // 마커가 지도 위에 표시되도록 설정합니다
     marker.setMap(map);
+  };
+
+  useEffect(() => {
+    setMapLocation({ lat: location.lat, lon: location.lon });
+  }, [location]);
+
+  //카카오지도를 생성합니다
+  useEffect(() => {
+    const mapContainer = document.getElementById("kakao-map"); // 지도를 표시할 div
+    const mapOption = {
+      center: new kakao.maps.LatLng(mapLocation.lat, mapLocation.lon), // 지도의 중심좌표
+      level: 3, // 지도의 확대 레벨
+    };
+    // 지도를 생성합니다
+    setMap(new kakao.maps.Map(mapContainer, mapOption));
+    setLatlng(new kakao.maps.LatLng(mapLocation.lat, mapLocation.lon));
+  }, [mapLocation, distance]);
+
+  //지도가 존재할시 카페를 찾습니다 또한 지정된 위치에 마커를 표시합니다
+  useEffect(() => {
+    if (!map) return;
+    if (map && !placeSearching) startSearch();
+    setUserMaker();
   }, [map]);
 
   //useCafe로 부터 카페들의 정보를 받습니다.
   useEffect(() => {
+    if (!map) return;
     setCombineDate([]);
     cafes.forEach((cafe) => {
       if (parseInt(cafe.distance) < distance) {
         setCombineDate((pre) => [...pre, cafe]);
       }
     });
-    setLoading(false);
-  }, [cafes, distance]);
+  }, [cafes]);
 
   //카페의 마커를 표시합니다
   useEffect(() => {
-    if (!loading && combineData.length > 0) {
+    if (combineData.length > 0) {
       const displayMarkers = () => {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다
@@ -155,6 +146,7 @@ const KakaoMap = ({
           map: map,
           position: new kakao.maps.LatLng(place.y, place.x),
         });
+        markers.push(marker);
         // 마커에 클릭이벤트를 등록합니다
         kakao.maps.event.addListener(marker, "click", function () {
           // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
@@ -196,16 +188,8 @@ const KakaoMap = ({
     }
   }, [getCenter]);
 
-  const onRangeChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const {
-      currentTarget: { value },
-    } = event;
-    setDistance(Number(value) * 15);
-  };
-
   return (
     <Container>
-      <Range type="range" onInput={onRangeChange} value={distance / 15} />
       <Map id="kakao-map"></Map>
       <Lists>
         {!loading && combineData.length > 1 ? (

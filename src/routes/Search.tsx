@@ -104,6 +104,7 @@ const Search = () => {
           location={location}
           newPlace={newPlace}
           getCenter={getCenter}
+          distance={750}
         />
       ) : (
         <Loader />
