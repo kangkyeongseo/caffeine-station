@@ -16,7 +16,6 @@ interface prop {
 }
 
 const Container = styled.div`
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -62,7 +61,7 @@ const KakaoMap = ({
     newPlace,
     placeSearching,
   });
-  console.log(combineData);
+
   // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
@@ -127,6 +126,7 @@ const KakaoMap = ({
   //카페의 마커를 표시합니다
   useEffect(() => {
     if (combineData.length > 0) {
+      setLoading(false);
       const displayMarkers = () => {
         // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
         // LatLngBounds 객체에 좌표를 추가합니다

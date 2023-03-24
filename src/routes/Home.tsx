@@ -21,11 +21,32 @@ const Container = styled.div`
   background-color: #ffffff;
 `;
 
+const RangeContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding: 5px 15px 7px 25px;
+  background-color: #246653;
+  border-radius: 10px 10px 0px 0px;
+`;
+
+const Column = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+`;
+
+const Distance = styled.span<{ size: string }>`
+  font-size: ${(props) => props.size};
+  color: #ffffff;
+`;
+
 const Range = styled.input`
   -webkit-appearance: none;
-  border: 1px;
+  background: transparent;
   &::-webkit-slider-runnable-track {
-    border: 1px solid #246653;
+    height: 15px;
+    background: #ffffff;
     border-radius: 10px;
   }
   &::-webkit-slider-thumb {
@@ -33,7 +54,7 @@ const Range = styled.input`
     width: 15px;
     height: 15px;
     border-radius: 50%;
-    background: #246653;
+    background: #e9c46a;
   }
 `;
 
@@ -47,17 +68,31 @@ const Home = () => {
     if (location.lat) setLoading(false);
   }, [location]);
 
+  useEffect(() => {
+    setLoading(false);
+  }, [distance]);
+
   const onRangeChange = (event: React.FormEvent<HTMLInputElement>) => {
     const {
       currentTarget: { value },
     } = event;
+    setLoading(true);
     setDistance(Number(value) * 15);
   };
 
   return (
     <Container>
       <PriceNav />
-      <Range type="range" onInput={onRangeChange} value={distance / 15} />
+      <RangeContainer>
+        <Column>
+          <Distance size={"14px"}>{distance}m 반경</Distance>
+        </Column>
+        <Column>
+          <Distance size={"12px"}>0km</Distance>
+          <Range type="range" onInput={onRangeChange} value={distance / 15} />
+          <Distance size={"12px"}>1.5km</Distance>
+        </Column>
+      </RangeContainer>
       {!loading && !store.loading ? (
         <KakaoMap arr={store.arr} location={location} distance={distance} />
       ) : (
