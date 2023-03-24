@@ -14,6 +14,7 @@ const PriceLists = styled.ul`
   gap: 20px;
   font-weight: lighter;
   margin-left: 10px;
+  margin-bottom: 15px;
 `;
 
 const PriceList = styled.li<{ clicked: number }>`
