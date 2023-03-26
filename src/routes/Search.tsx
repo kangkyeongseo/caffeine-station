@@ -41,14 +41,20 @@ const Button = styled.button`
   border: none;
 `;
 
+const PlaceBtnContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
+
 const PlaceBtn = styled.button`
-  margin-left: 360px;
   font-size: 12px;
   border: none;
   background-color: #246653;
   border-radius: 20px;
   color: #ffffff;
   padding: 5px 10px;
+  margin-right: 10px;
   &:hover {
     background-color: #144235;
   }
@@ -145,8 +151,10 @@ const Search = () => {
           <FontAwesomeIcon icon={faSearch} />
         </Button>
       </Form>
-      <PlaceBtn onClick={onClick}>이 지역 재검색</PlaceBtn>
-      <PriceNav />
+      <PlaceBtnContainer>
+        <PriceNav />
+        <PlaceBtn onClick={onClick}>이 지역 재검색</PlaceBtn>
+      </PlaceBtnContainer>
       <RangeContainer>
         <Column>
           <Distance size={"14px"}>{distance}m 반경</Distance>

@@ -11,6 +11,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   max-width: 480px;
+  min-height: calc(100vh - 110px);
   margin: 0 auto;
   background-color: #ffffff;
 `;
@@ -18,20 +19,17 @@ const Container = styled.div`
 const Title = styled.h1`
   font-size: 22px;
   margin-top: 70px;
-`;
-
-const Name = styled.span`
-  font-size: 20px;
-  margin-top: 20px;
   margin-bottom: 20px;
 `;
 
-const Text = styled.span`
+const Logout = styled.span`
   opacity: 0.8;
   cursor: pointer;
   font-size: 15px;
   margin-top: 5px;
 `;
+
+const ChangePassword = styled(Logout)``;
 
 const Lists = styled.ul`
   display: flex;
@@ -39,14 +37,18 @@ const Lists = styled.ul`
   align-items: center;
   width: 460px;
   margin: 0 auto;
-  margin-top: 50px;
+  margin-top: 80px;
 `;
 
 const SubTitle = styled.h3`
+  width: 100%;
   font-size: 18px;
   font-weight: 500;
-  margin-left: 10px;
-  margin-bottom: 10px;
+  margin: 0px 20px;
+  margin-bottom: 20px;
+  padding: 0px 10px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 `;
 
 const NoCafe = styled.span`
@@ -78,12 +80,11 @@ const Profile = () => {
   }, []);
   return (
     <Container>
-      <Title>프로필</Title>
-      <Name>{session.user?.userId}</Name>
-      <Text onClick={onLogout}>로그아웃</Text>
-      <Text>
+      <Title>{session.user?.userId}의 프로필</Title>
+      <Logout onClick={onLogout}>로그아웃</Logout>
+      <ChangePassword>
         <Link to={"/change-password"}>비밀번호 변경</Link>
-      </Text>
+      </ChangePassword>
       <Lists>
         <SubTitle>나의 카페</SubTitle>
         {cafes && cafes.length > 0 ? (

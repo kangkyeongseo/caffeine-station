@@ -29,8 +29,9 @@ interface DetailProp {
 
 const Container = styled.div`
   max-width: 480px;
+  min-height: calc(100vh - 110px);
   margin: 0 auto;
-  padding: 30px 0px;
+  padding: 20px 10px;
   background-color: #ffffff;
 `;
 
@@ -103,8 +104,8 @@ const InfoText = styled.span`
 `;
 
 const Map = styled.div`
-  width: 400px;
-  height: 400px;
+  width: 100%;
+  aspect-ratio: 1/1;
   margin: 0 auto;
 `;
 
