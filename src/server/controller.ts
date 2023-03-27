@@ -68,7 +68,6 @@ export const postHeart: RequestHandler = async (req, res) => {
       y,
       place_name,
       place_url,
-      distance,
       road_address_name,
       address_name,
       phone,
@@ -86,7 +85,6 @@ export const postHeart: RequestHandler = async (req, res) => {
       y,
       place_name,
       place_url,
-      distance,
       road_address_name,
       address_name,
       phone,
@@ -99,19 +97,23 @@ export const postHeart: RequestHandler = async (req, res) => {
     return res.json(user);
   }
   const heartExist = cafe?.hearts?.includes(String(_id));
-  if (!heartExist) {
+  if (!heartExist && user) {
     cafe?.hearts?.push(String(_id));
     await cafe?.save();
     user?.cafes.push(cafe!._id);
     await user?.save();
-  } else {
-    const index = cafe?.hearts?.indexOf(String(_id));
-    cafe?.hearts?.splice(index!, 1);
-    await cafe?.save();
-    const cafeIndex = user?.cafes.indexOf(cafe!._id);
-    user?.cafes.splice(cafeIndex!, 1);
-    await user?.save();
+    req.session.user = user;
+    return res.json(user);
   }
+  const index = cafe?.hearts?.indexOf(String(_id));
+  cafe?.hearts?.splice(index!, 1);
+  await cafe?.save();
+  if (cafe?.hearts?.length === 0) {
+    await cafe?.delete();
+  }
+  const cafeIndex = user?.cafes.indexOf(cafe!._id);
+  user?.cafes.splice(cafeIndex!, 1);
+  await user?.save();
   if (user) req.session.user = user;
   return res.json(user);
 };
@@ -144,13 +146,18 @@ export const postPassword: RequestHandler = async (req, res) => {
 };
 
 export const getCafes: RequestHandler = async (req, res) => {
+  if (!req.session.user) return;
   const {
-    session: { user },
+    session: {
+      user: { _id },
+    },
   } = req;
   let cafes: ICafe[] = [];
+  const user = await User.findById(_id);
   for (const value of user!.cafes) {
     const findCafe = await Cafe.findById(value);
     if (findCafe) cafes.push(findCafe);
   }
+
   res.json({ cafes });
 };

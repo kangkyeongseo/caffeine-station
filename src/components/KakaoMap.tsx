@@ -117,7 +117,7 @@ const KakaoMap = ({
     if (!map) return;
     setCombineDate([]);
     cafes.forEach((cafe) => {
-      if (parseInt(cafe.distance) < distance) {
+      if (parseInt(cafe.distance!) < distance) {
         setCombineDate((pre) => [...pre, cafe]);
       }
     });
@@ -194,7 +194,7 @@ const KakaoMap = ({
       <Lists>
         {!loading && combineData.length > 1 ? (
           combineData
-            .sort((a, b) => parseInt(a.distance) - parseInt(b.distance))
+            .sort((a, b) => parseInt(a.distance!) - parseInt(b.distance!))
             .map((cafe) => <Cafe key={cafe.id} cafe={cafe} />)
         ) : (
           <NoCafe>근처에 선택한 카페가 존재하지 않습니다.</NoCafe>

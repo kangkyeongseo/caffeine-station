@@ -70,11 +70,13 @@ const Cafe = ({ cafe }: Prop) => {
           <PhoneNumber>{cafe.phone}</PhoneNumber>
         </Column>
         <Column>
-          <Distance>
-            {cafe.distance.length > 3
-              ? `${cafe.distance.slice(0, 1)}.${cafe.distance.slice(1, 3)}km`
-              : `${cafe.distance}m`}
-          </Distance>
+          {cafe.distance ? (
+            <Distance>
+              {cafe.distance.length > 3
+                ? `${cafe.distance.slice(0, 1)}.${cafe.distance.slice(1, 3)}km`
+                : `${cafe.distance}m`}
+            </Distance>
+          ) : null}
         </Column>
       </Link>
     </Container>

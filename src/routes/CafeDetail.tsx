@@ -20,7 +20,7 @@ interface DetailProp {
     y: string;
     place_name: string;
     place_url: string;
-    distance: string;
+    distance?: string;
     road_address_name: string;
     address_name: string;
     phone: string;
@@ -193,12 +193,14 @@ const CafeDatail = () => {
           <Column>
             <FontAwesomeIcon icon={faRoad} color={"#144235"} />
             <Text>
-              {state.distance.length > 3
-                ? `${state.distance.slice(0, 1)}.${state.distance.slice(
-                    1,
-                    3
-                  )}km`
-                : `${state.distance}m`}
+              {state.distance
+                ? state.distance.length > 3
+                  ? `${state.distance.slice(0, 1)}.${state.distance.slice(
+                      1,
+                      3
+                    )}km`
+                  : `${state.distance}m`
+                : null}
             </Text>
           </Column>
           <Column onClick={onHeartClick}>
