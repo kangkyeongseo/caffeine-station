@@ -1,5 +1,5 @@
-import { sessionState } from "Atom";
-import { useRecoilState } from "recoil";
+import { flashState, sessionState } from "Atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import Cafe from "components/Cafe";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -57,17 +57,19 @@ const NoCafe = styled.span`
 `;
 
 const Profile = () => {
-  const [session, setSession] = useRecoilState(sessionState);
   const [cafes, setCafes] = useState<ICafe[]>([]);
+  const setFlash = useSetRecoilState(flashState);
+  const [session, setSession] = useRecoilState(sessionState);
   console.log(cafes);
   const navigate = useNavigate();
   const onLogout = async () => {
     setSession({ loggedIn: false, user: null });
-    navigate("/");
-    await fetch("http://localhost:8000/api/logout", {
+    const response = await fetch("http://localhost:8000/api/logout", {
       method: "POST",
       credentials: "include",
-    });
+    }).then((response) => response.json());
+    setFlash(response.message);
+    navigate("/");
   };
   const getCafes = async () => {
     const response = await fetch("http://localhost:8000/api/cafes", {

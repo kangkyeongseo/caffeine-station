@@ -1,7 +1,9 @@
+import { flashState } from "Atom";
 import { response } from "express";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
 interface Form {
@@ -62,6 +64,7 @@ const ErrorMsg = styled.span`
 const Join = () => {
   const navigate = useNavigate();
   const [joinMessage, setJoinMessage] = useState("");
+  const setFlash = useSetRecoilState(flashState);
   const {
     register,
     handleSubmit,
@@ -84,6 +87,7 @@ const Join = () => {
       body: JSON.stringify(data),
     }).then((response) => response.json());
     if (response.ok === true) {
+      setFlash(response.message);
       navigate("/login");
     } else {
       setJoinMessage(response.message);

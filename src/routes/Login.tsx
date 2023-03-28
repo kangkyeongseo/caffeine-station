@@ -1,8 +1,8 @@
-import { sessionState } from "Atom";
+import { flashState, sessionState } from "Atom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
 interface Form {
@@ -70,6 +70,7 @@ const Login = () => {
     formState: { errors },
   } = useForm<Form>();
   const [loginMessage, setLoginMessage] = useState("");
+  const setFlash = useSetRecoilState(flashState);
   const [session, setSassion] = useRecoilState(sessionState);
   const navigate = useNavigate();
   const onValid = async (data: Form) => {
@@ -86,6 +87,7 @@ const Login = () => {
         loggedIn: response.session.loggedIn,
         user: response.session.user,
       });
+      setFlash(response.message);
       navigate("/");
     }
   };

@@ -6,10 +6,10 @@ import {
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { sessionState } from "Atom";
+import { flashState, sessionState } from "Atom";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { kakao } from "../App";
 
@@ -112,8 +112,9 @@ const Map = styled.div`
 const CafeDatail = () => {
   const { state }: DetailProp = useLocation();
   const [map, setMap] = useState(null);
-  const [session, setSession] = useRecoilState(sessionState);
   const [heart, setHeart] = useState(false);
+  const setFlash = useSetRecoilState(flashState);
+  const [session, setSession] = useRecoilState(sessionState);
   const getHeart = async () => {
     const response = await fetch(
       `http://localhost:8000/api/heart/${state.id}`,
@@ -172,7 +173,8 @@ const CafeDatail = () => {
       })
         .then((response) => response.json())
         .then((json) => {
-          setSession({ loggedIn: true, user: json });
+          setSession({ loggedIn: true, user: json.user });
+          setFlash(json.message);
         });
       setHeart((pre) => !pre);
     } else {

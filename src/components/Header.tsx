@@ -1,6 +1,8 @@
 import { faCoffee } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { flashState } from "Atom";
 import { Link } from "react-router-dom";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 
 const Component = styled.div`
@@ -22,8 +24,11 @@ const Logo = styled.div`
 `;
 
 const Header = () => {
+  const flash = useRecoilValue(flashState);
+
   return (
     <Component>
+      <span>{flash}</span>
       <Logo>
         <Link to="/">
           caffeine station

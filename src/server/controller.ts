@@ -20,7 +20,7 @@ export const postJoin: RequestHandler = async (req, res) => {
   } catch {
     res.sendStatus(400);
   }
-  res.json({ ok: true });
+  res.json({ ok: true, message: "가입을 환영합니다." });
 };
 
 export const postLogin: RequestHandler = async (req, res) => {
@@ -38,7 +38,7 @@ export const postLogin: RequestHandler = async (req, res) => {
   req.session.loggedIn = true;
   req.session.user = user;
   req.session.save(() => {
-    return res.json({ ok: true, message: "Login", session: req.session });
+    return res.json({ ok: true, message: "안녕하세요!", session: req.session });
   });
 };
 
@@ -93,8 +93,7 @@ export const postHeart: RequestHandler = async (req, res) => {
     await newCafe.save();
     user?.cafes.push(newCafe._id);
     await user?.save();
-    console.log(newCafe, user);
-    return res.json(user);
+    return res.json({ user, message: "프로필에 카페가 추가되었습니다." });
   }
   const heartExist = cafe?.hearts?.includes(String(_id));
   if (!heartExist && user) {
@@ -103,7 +102,7 @@ export const postHeart: RequestHandler = async (req, res) => {
     user?.cafes.push(cafe!._id);
     await user?.save();
     req.session.user = user;
-    return res.json(user);
+    return res.json({ user, message: "프로필에 카페가 추가되었습니다." });
   }
   const index = cafe?.hearts?.indexOf(String(_id));
   cafe?.hearts?.splice(index!, 1);
@@ -115,11 +114,11 @@ export const postHeart: RequestHandler = async (req, res) => {
   user?.cafes.splice(cafeIndex!, 1);
   await user?.save();
   if (user) req.session.user = user;
-  return res.json(user);
+  return res.json({ user, message: "프로필에 카페가 제거되었습니다." });
 };
 
 export const postLogout: RequestHandler = (req, res) => {
-  req.session.destroy(() => res.end());
+  req.session.destroy(() => res.json({ message: "안녕히가세요." }));
 };
 
 export const postPassword: RequestHandler = async (req, res) => {

@@ -43,3 +43,8 @@ export const storeState = atom<Store>({
     loading: false,
   },
 });
+
+export const flashState = atom({
+  key: "flashState",
+  default: "",
+});
