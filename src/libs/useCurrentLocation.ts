@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 const useCurrentLocation = () => {
   const [location, setLocation] = useState<Location>({ lat: null, lon: null });
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition((position) => {
@@ -14,6 +15,7 @@ const useCurrentLocation = () => {
         setLoading(false);
       });
   }, []);
+
   return { loading, location };
 };
 

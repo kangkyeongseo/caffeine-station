@@ -21,7 +21,7 @@ const Form = styled.form`
   flex-direction: column;
   position: relative;
   margin: 0 10px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 `;
 
 const TextInput = styled.input`
@@ -44,7 +44,7 @@ const Button = styled.button`
 const PlaceBtnContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
 `;
 
 const PlaceBtn = styled.button`
@@ -63,6 +63,7 @@ const PlaceBtn = styled.button`
 const RangeContainer = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: 15px;
   padding: 5px 15px 7px 25px;
   background-color: #246653;
   border-radius: 10px 10px 0px 0px;

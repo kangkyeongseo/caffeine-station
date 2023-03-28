@@ -14,7 +14,6 @@ const PriceLists = styled.ul`
   gap: 20px;
   font-weight: lighter;
   margin-left: 10px;
-  margin-bottom: 15px;
 `;
 
 const PriceList = styled.li<{ clicked: number }>`
@@ -24,9 +23,9 @@ const PriceList = styled.li<{ clicked: number }>`
 `;
 
 const PriceNav = () => {
+  const [price, setPrice] = useState("low");
   const location = useRecoilValue(locationState);
   const [store, setStore] = useRecoilState(storeState);
-  const [price, setPrice] = useState("low");
 
   const onPriceClick = (price: string) => {
     if (price === "low") {

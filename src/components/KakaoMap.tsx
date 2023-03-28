@@ -1,18 +1,18 @@
-import { Location, mapLocationState, searchLocationState } from "Atom";
-import { ICafe } from "db/Cafe";
-import useCafe from "libs/useCafe";
 import { useEffect, useState } from "react";
+import { Location, mapLocationState, searchLocationState } from "Atom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import styled from "styled-components";
+import { ICafe } from "db/Cafe";
 import { kakao } from "../App";
+import styled from "styled-components";
+import useCafe from "libs/useCafe";
 import Cafe from "./Cafe";
 
 interface prop {
   arr: string[];
   location: Location;
-  newPlace?: string | null;
-  getCenter?: boolean;
   distance: number;
+  newPlace?: string;
+  getCenter?: boolean;
 }
 
 const Container = styled.div`
@@ -43,11 +43,10 @@ const NoCafe = styled.span`
 const KakaoMap = ({
   arr,
   location,
-  newPlace = null,
-  getCenter = false,
   distance,
+  newPlace,
+  getCenter = false,
 }: prop) => {
-  let markers: any[] = [];
   const [loading, setLoading] = useState(true);
   const [combineData, setCombineDate] = useState<ICafe[]>([]);
   const [placeSearching, setPlaceSearching] = useState(false);
@@ -55,12 +54,7 @@ const KakaoMap = ({
   const [latlng, setLatlng] = useState(null);
   const [mapLocation, setMapLocation] = useRecoilState(mapLocationState);
   const setSearchLocation = useSetRecoilState(searchLocationState);
-  const { cafes, startSearch } = useCafe({
-    arr,
-    latlng,
-    newPlace,
-    placeSearching,
-  });
+  const { cafes, startSearch } = useCafe({ arr, latlng });
 
   // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
@@ -88,6 +82,34 @@ const KakaoMap = ({
     // 마커가 지도 위에 표시되도록 설정합니다
     marker.setMap(map);
   };
+  const displayMarkers = () => {
+    // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+    // LatLngBounds 객체에 좌표를 추가합니다
+    const bounds = new kakao.maps.LatLngBounds();
+    for (var i = 0; i < combineData.length; i++) {
+      displayMarker(combineData[i]);
+      bounds.extend(new kakao.maps.LatLng(combineData[i].y, combineData[i].x));
+    }
+    // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+    map.setBounds(bounds);
+  };
+  const displayMarker = (place: ICafe) => {
+    // 마커를 생성하고 지도에 표시합니다
+    const marker = new kakao.maps.Marker({
+      map: map,
+      position: new kakao.maps.LatLng(place.y, place.x),
+    });
+    // 마커에 클릭이벤트를 등록합니다
+    kakao.maps.event.addListener(marker, "click", function () {
+      // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+      infowindow.setContent(
+        '<div style="padding:5px;font-size:12px;">' +
+          place.place_name +
+          "</div>"
+      );
+      infowindow.open(map, marker);
+    });
+  };
 
   useEffect(() => {
     setMapLocation({ lat: location.lat, lon: location.lon });
@@ -108,9 +130,19 @@ const KakaoMap = ({
   //지도가 존재할시 카페를 찾습니다 또한 지정된 위치에 마커를 표시합니다
   useEffect(() => {
     if (!map) return;
-    if (map && !placeSearching) startSearch();
     setUserMaker();
+    if (!placeSearching) {
+      startSearch(placeSearching);
+    }
   }, [map]);
+
+  //Search 페이지에서 새로운 장소를 받을시 실행합니다.
+  useEffect(() => {
+    if (placeSearching) {
+      startSearch(placeSearching, newPlace);
+      setPlaceSearching(false);
+    }
+  }, [placeSearching]);
 
   //useCafe로 부터 카페들의 정보를 받습니다.
   useEffect(() => {
@@ -126,51 +158,10 @@ const KakaoMap = ({
   //카페의 마커를 표시합니다
   useEffect(() => {
     if (combineData.length > 0) {
-      setLoading(false);
-      const displayMarkers = () => {
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-        // LatLngBounds 객체에 좌표를 추가합니다
-        const bounds = new kakao.maps.LatLngBounds();
-        for (var i = 0; i < combineData.length; i++) {
-          displayMarker(combineData[i]);
-          bounds.extend(
-            new kakao.maps.LatLng(combineData[i].y, combineData[i].x)
-          );
-        }
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        map.setBounds(bounds);
-      };
-      const displayMarker = (place: ICafe) => {
-        // 마커를 생성하고 지도에 표시합니다
-        const marker = new kakao.maps.Marker({
-          map: map,
-          position: new kakao.maps.LatLng(place.y, place.x),
-        });
-        markers.push(marker);
-        // 마커에 클릭이벤트를 등록합니다
-        kakao.maps.event.addListener(marker, "click", function () {
-          // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-          infowindow.setContent(
-            '<div style="padding:5px;font-size:12px;">' +
-              place.place_name +
-              "</div>"
-          );
-          infowindow.open(map, marker);
-        });
-      };
       displayMarkers();
+      setLoading(false);
     }
   }, [combineData]);
-
-  //Search 페이지에서 새로운 장소를 받을시 실행합니다.
-  useEffect(() => {
-    if (placeSearching) {
-      setCombineDate([]);
-      startSearch();
-      /* ps.keywordSearch(newPlace, placesSearchCB); */
-      setPlaceSearching(false);
-    }
-  }, [placeSearching]);
 
   //Search 페이지에서 새로운 장소를 받을시 실행합니다.
   useEffect(() => {

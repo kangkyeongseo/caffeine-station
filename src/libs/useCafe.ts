@@ -7,16 +7,15 @@ import { useSetRecoilState } from "recoil";
 interface Prop {
   arr: string[];
   latlng: any;
-  newPlace: String | null;
-  placeSearching: boolean;
 }
 
-const useCafe = ({ arr, latlng, newPlace, placeSearching }: Prop) => {
+const useCafe = ({ arr, latlng }: Prop) => {
   const setSearchLocation = useSetRecoilState(searchLocationState);
   const setMapLocation = useSetRecoilState(mapLocationState);
   const [cafes, setCafes] = useState<ICafe[]>([]);
   const ps = new kakao.maps.services.Places();
-  const startSearch = () => {
+
+  const startSearch = (placeSearching: boolean, newPlace?: string) => {
     if (!placeSearching) {
       setCafes([]);
       arr.map((keyword) => {
@@ -26,12 +25,12 @@ const useCafe = ({ arr, latlng, newPlace, placeSearching }: Prop) => {
         });
       });
     } else {
-      ps.keywordSearch(newPlace, placesSearchCB);
+      ps.keywordSearch(newPlace, newPlaceSearchCB);
     }
   };
 
-  const placesSearchCB = (data: ICafe[], status: number) => {
-    if (status === kakao.maps.services.Status.OK && placeSearching) {
+  const newPlaceSearchCB = (data: ICafe[], status: number) => {
+    if (status === kakao.maps.services.Status.OK) {
       setMapLocation({
         lat: Number(data[0].y),
         lon: Number(data[0].x),
@@ -41,7 +40,17 @@ const useCafe = ({ arr, latlng, newPlace, placeSearching }: Prop) => {
         lon: Number(data[0].x),
       });
       setCafes([data[0]]);
-    } else if (status === kakao.maps.services.Status.OK) {
+    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+      alert("검색 결과가 존재하지 않습니다.");
+      return;
+    } else if (status === kakao.maps.services.Status.ERROR) {
+      alert("검색 결과 중 오류가 발생했습니다.");
+      return;
+    }
+  };
+
+  const placesSearchCB = (data: ICafe[], status: number) => {
+    if (status === kakao.maps.services.Status.OK) {
       setCafes((pre) => [...pre, ...data]);
     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
       alert("검색 결과가 존재하지 않습니다.");
@@ -51,6 +60,7 @@ const useCafe = ({ arr, latlng, newPlace, placeSearching }: Prop) => {
       return;
     }
   };
+
   return { cafes, startSearch };
 };
 
