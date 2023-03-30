@@ -96,7 +96,6 @@ const Header = () => {
     }, 500);
   };
 
-  console.log(popup);
   return (
     <>
       <FlashBox variants={boxVars} initial="start" animate="end">

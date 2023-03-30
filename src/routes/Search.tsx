@@ -9,6 +9,7 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 
 const Container = styled.div`
+  position: relative;
   max-width: 480px;
   min-height: calc(100vh - 110px);
   margin: 0 auto;
@@ -48,6 +49,10 @@ const PlaceBtnContainer = styled.div`
 `;
 
 const PlaceBtn = styled.button`
+  z-index: 2;
+  position: absolute;
+  top: 180px;
+  right: 10px;
   font-size: 12px;
   border: none;
   background-color: #246653;
@@ -64,7 +69,7 @@ const RangeContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
-  padding: 5px 15px 7px 25px;
+  padding: 5px 15px 7px 20px;
   background-color: #246653;
   border-radius: 10px 10px 0px 0px;
 `;
@@ -152,10 +157,8 @@ const Search = () => {
           <FontAwesomeIcon icon={faSearch} />
         </Button>
       </Form>
-      <PlaceBtnContainer>
-        <PriceNav />
-        <PlaceBtn onClick={onClick}>이 지역 재검색</PlaceBtn>
-      </PlaceBtnContainer>
+      <PriceNav />
+      <PlaceBtn onClick={onClick}>이 지역 재검색</PlaceBtn>
       <RangeContainer>
         <Column>
           <Distance size={"14px"}>{distance}m 반경</Distance>

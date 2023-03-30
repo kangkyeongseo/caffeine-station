@@ -52,7 +52,7 @@ table {
 	 box-sizing: border-box;
 }
 body {
-	background-color: rgba(0,0,0,0.3);
+	background-color: rgba(0,0,0,0.8);
 }
 a {
   color: inherit;

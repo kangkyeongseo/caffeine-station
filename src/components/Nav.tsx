@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { sessionState } from "Atom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { useState } from "react";
 
 const Navigation = styled.nav`
+  z-index: 10;
   max-width: 480px;
   margin: 0 auto;
   color: #ffffff;
@@ -20,9 +22,11 @@ const Lists = styled.ul`
   }
 `;
 
-const List = styled.li`
+const List = styled.li<{ selected: string }>`
   width: 100%;
   background-color: #246653;
+  color: ${(props) => props.selected};
+  transform: translateY(0px);
   a {
     display: flex;
     justify-content: center;
@@ -35,17 +39,32 @@ const List = styled.li`
 `;
 
 const Nav = () => {
-  const [session, setSession] = useRecoilState(sessionState);
+  const session = useRecoilValue(sessionState);
+  const [nav, setNav] = useState("home");
+
+  const onClick = (nav: string) => {
+    setNav(nav);
+  };
+
   return (
     <Navigation>
       <Lists>
-        <List>
+        <List
+          onClick={() => onClick("home")}
+          selected={nav === "home" ? "#e9c46a" : "#ffffff"}
+        >
           <Link to="/">Home</Link>
         </List>
-        <List>
+        <List
+          onClick={() => onClick("search")}
+          selected={nav === "search" ? "#e9c46a" : "#ffffff"}
+        >
           <Link to="/search">Search</Link>
         </List>
-        <List>
+        <List
+          onClick={() => onClick("profile")}
+          selected={nav === "profile" ? "#e9c46a" : "#ffffff"}
+        >
           {session.loggedIn ? (
             <Link to="/profile">Profile</Link>
           ) : (

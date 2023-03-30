@@ -40,6 +40,7 @@ const Header = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 0 30px;
+  margin-top: 20px;
   margin-bottom: 20px;
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
@@ -55,7 +56,7 @@ const HeaderInfo = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   width: 70%;
-  margin-top: 20px;
+  margin-top: 30px;
 `;
 
 const Column = styled.div`
@@ -83,14 +84,14 @@ const InfoContainer = styled.div`
 const SubTitle = styled.h3`
   font-size: 15px;
   font-weight: 500;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 const Info = styled.div`
   display: flex;
   justify-content: flex-start;
   gap: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 
 const InfoColumn = styled.div`
@@ -104,7 +105,7 @@ const InfoText = styled.span`
 `;
 
 const Map = styled.div`
-  width: 100%;
+  width: 95%;
   aspect-ratio: 1/1;
   margin: 0 auto;
 `;

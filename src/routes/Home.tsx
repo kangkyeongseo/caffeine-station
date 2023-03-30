@@ -19,7 +19,7 @@ const RangeContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin-top: 15px;
-  padding: 5px 15px 7px 25px;
+  padding: 5px 15px 7px 20px;
   background-color: #246653;
   border-radius: 10px 10px 0px 0px;
 `;

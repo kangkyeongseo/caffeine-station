@@ -1,4 +1,5 @@
 import { locationState, storeState } from "Atom";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
@@ -10,16 +11,34 @@ export const coffeePrice = {
 };
 
 const PriceLists = styled.ul`
-  display: flex;
-  gap: 20px;
+  position: relative;
+  max-width: 330px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   font-weight: lighter;
-  margin-left: 10px;
+  margin: 0 auto;
+  padding: 10px 0px;
+  background-color: #e9c46a;
+  border-radius: 20px;
 `;
 
-const PriceList = styled.li<{ clicked: number }>`
-  color: rgba(0, 0, 0, 0.9);
-  font-weight: ${(props) => props.clicked};
+const PriceSelected = styled(motion.div)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #246653;
+  width: 110px;
+  height: 36px;
+  border-radius: 20px;
+`;
+
+const PriceList = styled.li<{ clicked: boolean }>`
+  z-index: 2;
+  text-align: center;
+  color: ${(props) => (props.clicked ? "#ffffff" : "#000000")};
+  font-weight: ${(props) => (props.clicked ? 500 : 300)};
   cursor: pointer;
+  transition: all 0.5s;
 `;
 
 const PriceNav = () => {
@@ -46,23 +65,32 @@ const PriceNav = () => {
     }
   }, [store]);
 
+  const selectedVars = {
+    start: {},
+    end: {
+      translateX: price === "middle" ? 110 : price === "high" ? 220 : 0,
+      transition: { type: "spring", duration: 0.5 },
+    },
+  };
+
   return (
     <PriceLists>
+      <PriceSelected variants={selectedVars} initial="start" animate="end" />
       <PriceList
         onClick={() => onPriceClick("low")}
-        clicked={price === "low" ? 500 : 300}
+        clicked={price === "low" ? true : false}
       >
         가성비
       </PriceList>
       <PriceList
         onClick={() => onPriceClick("middle")}
-        clicked={price === "middle" ? 500 : 300}
+        clicked={price === "middle" ? true : false}
       >
         브랜드
       </PriceList>
       <PriceList
         onClick={() => onPriceClick("high")}
-        clicked={price === "high" ? 500 : 300}
+        clicked={price === "high" ? true : false}
       >
         프리미엄
       </PriceList>
