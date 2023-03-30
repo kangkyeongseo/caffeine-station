@@ -118,7 +118,7 @@ export const postHeart: RequestHandler = async (req, res) => {
 };
 
 export const postLogout: RequestHandler = (req, res) => {
-  req.session.destroy(() => res.json({ message: "안녕히가세요." }));
+  req.session.destroy(() => res.json({ message: "안녕히가세요!" }));
 };
 
 export const postPassword: RequestHandler = async (req, res) => {
@@ -135,12 +135,15 @@ export const postPassword: RequestHandler = async (req, res) => {
     loginUser!.password
   );
   if (!comparePassword) {
-    return res.json({ ok: false, message: "password dose not compare" });
+    return res.json({
+      ok: false,
+      message: "현재 비밀번호가 일치하지 않습니다.",
+    });
   }
   loginUser!.password = changingPassword;
   await loginUser!.save();
   req.session.destroy(() => {
-    return res.json({ ok: true, message: "change password" });
+    return res.json({ ok: true, message: "비밀번호가 변경되었습니다." });
   });
 };
 

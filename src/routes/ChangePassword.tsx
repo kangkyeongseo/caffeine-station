@@ -1,7 +1,7 @@
-import { sessionState } from "Atom";
+import { flashState, sessionState } from "Atom";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
 interface Form {
@@ -15,6 +15,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   max-width: 480px;
+  min-height: calc(100vh - 110px);
   margin: 0 auto;
   padding: 70px 0px;
   background-color: #ffffff;
@@ -24,7 +25,11 @@ const Title = styled.h1`
   font-size: 22px;
 `;
 
-const Form = styled.form`
+const Form = styled.form<{
+  existingFocus: boolean;
+  changingFocus: boolean;
+  confirmFocus: boolean;
+}>`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -37,6 +42,18 @@ const Form = styled.form`
       outline: none;
     }
   }
+  input:first-child {
+    border: ${(props) =>
+      props.existingFocus ? "1px solid #e63946" : "0.5px solid #000000"};
+  }
+  input:nth-child(3) {
+    border: ${(props) =>
+      props.changingFocus ? "1px solid #e63946" : "0.5px solid #000000"};
+  }
+  input:nth-child(5) {
+    border: ${(props) =>
+      props.confirmFocus ? "1px solid #e63946" : "0.5px solid #000000"};
+  }
   input:last-child {
     color: white;
     border: none;
@@ -47,9 +64,18 @@ const Form = styled.form`
   }
 `;
 
+const ErrorMsg = styled.div<{ display: boolean }>`
+  display: ${(props) => (props.display ? "block" : "none")};
+  color: #e63946;
+  font-size: 13px;
+  padding: 7px;
+  text-align: center;
+`;
+
 const ChangePassword = () => {
   const navigate = useNavigate();
-  const [session, setSession] = useRecoilState(sessionState);
+  const setSession = useSetRecoilState(sessionState);
+  const setFlash = useSetRecoilState(flashState);
   const {
     register,
     handleSubmit,
@@ -74,9 +100,10 @@ const ChangePassword = () => {
       body: JSON.stringify(data),
     }).then((response) => response.json());
     if (!response.ok) {
+      setFlash(response.message);
       setError(
         "existingPassword",
-        { message: "비밀번호가 일치하지 않습니다." },
+        { message: "현재 비밀번호가 일치하지 않습니다." },
         { shouldFocus: true }
       );
     } else {
@@ -84,31 +111,49 @@ const ChangePassword = () => {
         loggedIn: false,
         user: null,
       });
+      setFlash(response.message);
       navigate("/login");
     }
   };
   return (
     <Container>
       <Title>비밀번호 변경</Title>
-      <Form onSubmit={handleSubmit(onValid)}>
+      <Form
+        onSubmit={handleSubmit(onValid)}
+        existingFocus={errors.existingPassword ? true : false}
+        changingFocus={errors.changingPassword ? true : false}
+        confirmFocus={errors.confirmPassword ? true : false}
+      >
         <input
-          {...register("existingPassword", { required: "입력해주세요." })}
+          {...register("existingPassword", {
+            required: "현재 비밀번호를 입력해주세요.",
+          })}
           type="password"
           placeholder="현재 비밀번호"
         />
-        <span>{errors.existingPassword?.message}</span>
+        <ErrorMsg display={errors.existingPassword ? true : false}>
+          {errors.existingPassword?.message}
+        </ErrorMsg>
         <input
-          {...register("changingPassword", { required: "입력해주세요." })}
+          {...register("changingPassword", {
+            required: "변경할 비밀번호를 입력해주세요.",
+          })}
           type="password"
           placeholder="변경할 비밀번호"
         />
-        <span>{errors.changingPassword?.message}</span>
+        <ErrorMsg display={errors.changingPassword ? true : false}>
+          {errors.changingPassword?.message}
+        </ErrorMsg>
         <input
-          {...register("confirmPassword", { required: "입력해주세요." })}
+          {...register("confirmPassword", {
+            required: "변경할 비밀번호를 입력해주세요.",
+          })}
           type="password"
           placeholder="비밀번호 확인"
         />
-        <span>{errors.confirmPassword?.message}</span>
+        <ErrorMsg display={errors.confirmPassword ? true : false}>
+          {errors.confirmPassword?.message}
+        </ErrorMsg>
         <input type="submit" value="변경하기" />
       </Form>
     </Container>

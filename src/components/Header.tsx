@@ -71,6 +71,7 @@ const FlashBtn = styled.button`
 const Header = () => {
   const [flash, setFlash] = useRecoilState(flashState);
   const [visibility, setVisibility] = useState("hidden");
+  const [display, setDisplay] = useState("none");
   const [popup, setPopup] = useState(false);
   const boxVars = {
     start: { opacity: 0, scale: 0.5 },
@@ -84,6 +85,7 @@ const Header = () => {
   useEffect(() => {
     if (flash.length > 0) {
       setVisibility("visible");
+      setDisplay("block");
       setPopup(true);
     }
   }, [flash]);
@@ -92,17 +94,20 @@ const Header = () => {
     setVisibility("hidden");
     setPopup(false);
     setTimeout(() => {
+      setDisplay("none");
       setFlash("");
     }, 500);
   };
 
   return (
     <>
-      <FlashBox variants={boxVars} initial="start" animate="end">
-        <FlashText>{flash}</FlashText>
-        <FlashBtn onClick={onClick}>확인</FlashBtn>
-      </FlashBox>
-      <FlashBg visibility={visibility} />
+      <FlashContainer display={display}>
+        <FlashBox variants={boxVars} initial="start" animate="end">
+          <FlashText>{flash}</FlashText>
+          <FlashBtn onClick={onClick}>확인</FlashBtn>
+        </FlashBox>
+        <FlashBg visibility={visibility} />
+      </FlashContainer>
       <Component>
         <Logo>
           <Link to="/">

@@ -27,7 +27,11 @@ const Title = styled.h1`
   font-size: 22px;
 `;
 
-const Form = styled.form`
+const Form = styled.form<{
+  idFocus: boolean;
+  passwordFocus: boolean;
+  confrimFocus: boolean;
+}>`
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -40,6 +44,18 @@ const Form = styled.form`
       outline: none;
     }
   }
+  input:first-child {
+    border: ${(props) =>
+      props.idFocus ? "1px solid #e63946" : "0.5px solid #000000"};
+  }
+  input:nth-child(3) {
+    border: ${(props) =>
+      props.passwordFocus ? "1px solid #e63946" : "0.5px solid #000000"};
+  }
+  input:nth-child(5) {
+    border: ${(props) =>
+      props.confrimFocus ? "1px solid #e63946" : "0.5px solid #000000"};
+  }
   input:last-child {
     color: white;
     border: none;
@@ -50,20 +66,16 @@ const Form = styled.form`
   }
 `;
 
-const ErrorContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-top: 10px;
-`;
-
-const ErrorMsg = styled.span`
+const ErrorMsg = styled.div<{ display: boolean }>`
+  display: ${(props) => (props.display ? "block" : "none")};
   color: #e63946;
+  font-size: 13px;
+  padding: 7px;
+  text-align: center;
 `;
 
 const Join = () => {
   const navigate = useNavigate();
-  const [joinMessage, setJoinMessage] = useState("");
   const setFlash = useSetRecoilState(flashState);
   const {
     register,
@@ -90,23 +102,34 @@ const Join = () => {
       setFlash(response.message);
       navigate("/login");
     } else {
-      setJoinMessage(response.message);
+      setFlash(response.message);
     }
   };
   return (
     <Container>
       <Title>가입하기</Title>
-      <Form onSubmit={handleSubmit(onValid)}>
+      <Form
+        onSubmit={handleSubmit(onValid)}
+        idFocus={errors.id ? true : false}
+        passwordFocus={errors.password ? true : false}
+        confrimFocus={errors.confirmPassword ? true : false}
+      >
         <input
           {...register("id", { required: "아이디를 입력해주세요." })}
           type="text"
           placeholder="ID"
         />
+        <ErrorMsg display={errors.id ? true : false}>
+          {errors.id?.message}
+        </ErrorMsg>
         <input
           {...register("password", { required: "비밀번호를 입력해주세요." })}
           type="password"
           placeholder="Password"
         />
+        <ErrorMsg display={errors.password ? true : false}>
+          {errors.password?.message}
+        </ErrorMsg>
         <input
           {...register("confirmPassword", {
             required: "비밀번호를 입력해주세요.",
@@ -114,14 +137,11 @@ const Join = () => {
           type="password"
           placeholder="Confirm Password"
         />
+        <ErrorMsg display={errors.confirmPassword ? true : false}>
+          {errors.confirmPassword?.message}
+        </ErrorMsg>
         <input type="submit" value="가입" />
       </Form>
-      <ErrorContainer>
-        <ErrorMsg>{errors.id?.message}</ErrorMsg>
-        <ErrorMsg>{errors.password?.message}</ErrorMsg>
-        <ErrorMsg>{errors.confirmPassword?.message}</ErrorMsg>
-        <ErrorMsg>{joinMessage}</ErrorMsg>
-      </ErrorContainer>
     </Container>
   );
 };
