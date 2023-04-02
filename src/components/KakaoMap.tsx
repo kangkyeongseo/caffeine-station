@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Location, mapLocationState, searchLocationState } from "Atom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { ICafe } from "db/Cafe";
@@ -35,6 +35,10 @@ const Lists = styled.ul`
   margin-top: 15px;
 `;
 
+const List = styled.div`
+  width: 100%;
+`;
+
 const NoCafe = styled.span`
   display: block;
   margin: 50px 0px;
@@ -48,13 +52,18 @@ const KakaoMap = ({
   getCenter = false,
 }: prop) => {
   const [loading, setLoading] = useState(true);
-  const [combineData, setCombineDate] = useState<ICafe[]>([]);
+  const [combineData, setCombineData] = useState<ICafe[]>([]);
+  const [sliceData, setSliceData] = useState<ICafe[]>([]);
   const [placeSearching, setPlaceSearching] = useState(false);
   const [map, setMap] = useState<any>(null);
-  const [latlng, setLatlng] = useState(null);
+  const [latlng, setLatlng] = useState<{ La: number; Ma: number } | null>(null);
   const [mapLocation, setMapLocation] = useRecoilState(mapLocationState);
   const setSearchLocation = useSetRecoilState(searchLocationState);
-  const { cafes, startSearch } = useCafe({ arr, latlng });
+  const {
+    cafes,
+    startSearch,
+    loading: cafesLoading,
+  } = useCafe({ arr, latlng });
 
   // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
   const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
@@ -131,7 +140,7 @@ const KakaoMap = ({
   useEffect(() => {
     if (!map) return;
     setUserMaker();
-    if (!placeSearching) {
+    if (!placeSearching && latlng?.La !== 0) {
       startSearch(placeSearching);
     }
   }, [map]);
@@ -146,17 +155,24 @@ const KakaoMap = ({
 
   //useCafe로 부터 카페들의 정보를 받습니다.
   useEffect(() => {
-    if (!map) return;
-    setCombineDate([]);
+    if (!map || cafesLoading) return;
+    setCombineData([]);
     cafes.forEach((cafe) => {
       if (parseInt(cafe.distance!) < distance) {
-        setCombineDate((pre) => [...pre, cafe]);
+        setCombineData((pre) => [...pre, cafe]);
       }
     });
-  }, [cafes]);
+  }, [cafesLoading, distance, cafes]);
 
   //카페의 마커를 표시합니다
   useEffect(() => {
+    if (combineData.length > 5) {
+      setMaxLength(Math.ceil(combineData.length / 5));
+      setSliceData(combineData.slice(0, 5));
+    } else {
+      setSliceData(combineData);
+      setMaxLength(1);
+    }
     if (combineData.length > 0) {
       displayMarkers();
       setLoading(false);
@@ -179,18 +195,57 @@ const KakaoMap = ({
     }
   }, [getCenter]);
 
+  // 무한 스크롤
+  const [length, setLenght] = useState(1);
+
+  const [maxLength, setMaxLength] = useState(1);
+
+  let target = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setSliceData(combineData.slice(0, 5 * length));
+  }, [length]);
+
+  const changeSliceData = () => {
+    setLenght((pre) => pre + 1);
+  };
+
+  const callback: IntersectionObserverCallback = (entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && length < maxLength) {
+        observer.unobserve(entry.target);
+        changeSliceData();
+      }
+    });
+  };
+
+  useEffect(() => {
+    let observer: IntersectionObserver;
+    if (target.current) {
+      observer = new IntersectionObserver(callback, {
+        threshold: 0.8,
+      });
+      observer.observe(target.current as Element);
+    }
+    return () => observer?.disconnect();
+  }, [sliceData]);
+
   return (
     <Container>
       <Map id="kakao-map"></Map>
-      <Lists>
-        {!loading && combineData.length > 1 ? (
-          combineData
+      {!loading && sliceData.length > 1 ? (
+        <Lists>
+          {sliceData
             .sort((a, b) => parseInt(a.distance!) - parseInt(b.distance!))
-            .map((cafe) => <Cafe key={cafe.id} cafe={cafe} />)
-        ) : (
-          <NoCafe>근처에 선택한 카페가 존재하지 않습니다.</NoCafe>
-        )}
-      </Lists>
+            .map((cafe) => (
+              <List ref={target} key={cafe.id}>
+                <Cafe cafe={cafe} />
+              </List>
+            ))}
+        </Lists>
+      ) : (
+        <NoCafe>근처에 선택한 카페가 존재하지 않습니다.</NoCafe>
+      )}
     </Container>
   );
 };

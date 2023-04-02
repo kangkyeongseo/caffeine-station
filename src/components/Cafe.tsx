@@ -7,8 +7,7 @@ interface Prop {
   cafe: ICafe;
 }
 
-const Container = styled.li`
-  width: 100%;
+const Container = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.2);
   margin-bottom: 10px;
   a {
