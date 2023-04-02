@@ -51,7 +51,6 @@ const KakaoMap = ({
   newPlace,
   getCenter = false,
 }: prop) => {
-  const [loading, setLoading] = useState(true);
   const [combineData, setCombineData] = useState<ICafe[]>([]);
   const [sliceData, setSliceData] = useState<ICafe[]>([]);
   const [placeSearching, setPlaceSearching] = useState(false);
@@ -175,7 +174,6 @@ const KakaoMap = ({
     }
     if (combineData.length > 0) {
       displayMarkers();
-      setLoading(false);
     }
   }, [combineData]);
 
@@ -233,7 +231,7 @@ const KakaoMap = ({
   return (
     <Container>
       <Map id="kakao-map"></Map>
-      {!loading && sliceData.length > 1 ? (
+      {sliceData.length > 0 ? (
         <Lists>
           {sliceData
             .sort((a, b) => parseInt(a.distance!) - parseInt(b.distance!))
