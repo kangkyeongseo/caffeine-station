@@ -204,15 +204,11 @@ const KakaoMap = ({
     setSliceData(combineData.slice(0, 5 * length));
   }, [length]);
 
-  const changeSliceData = () => {
-    setLenght((pre) => pre + 1);
-  };
-
   const callback: IntersectionObserverCallback = (entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting && length < maxLength) {
         observer.unobserve(entry.target);
-        changeSliceData();
+        setLenght((pre) => pre + 1);
       }
     });
   };

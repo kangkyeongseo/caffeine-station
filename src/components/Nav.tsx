@@ -43,8 +43,6 @@ const Nav = () => {
   const location = useLocation();
   const [nav, setNav] = useState(location.pathname);
 
-  console.log(location);
-
   const onClick = (nav: string) => {
     setNav(nav);
   };
