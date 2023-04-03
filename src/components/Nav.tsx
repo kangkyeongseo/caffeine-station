@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { sessionState } from "Atom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { useState } from "react";
 
@@ -40,7 +40,10 @@ const List = styled.li<{ selected: string }>`
 
 const Nav = () => {
   const session = useRecoilValue(sessionState);
-  const [nav, setNav] = useState("home");
+  const location = useLocation();
+  const [nav, setNav] = useState(location.pathname);
+
+  console.log(location);
 
   const onClick = (nav: string) => {
     setNav(nav);
@@ -50,20 +53,20 @@ const Nav = () => {
     <Navigation>
       <Lists>
         <List
-          onClick={() => onClick("home")}
-          selected={nav === "home" ? "#e9c46a" : "#ffffff"}
+          onClick={() => onClick("/")}
+          selected={nav === "/" ? "#e9c46a" : "#ffffff"}
         >
           <Link to="/">Home</Link>
         </List>
         <List
-          onClick={() => onClick("search")}
-          selected={nav === "search" ? "#e9c46a" : "#ffffff"}
+          onClick={() => onClick("/search")}
+          selected={nav === "/search" ? "#e9c46a" : "#ffffff"}
         >
           <Link to="/search">Search</Link>
         </List>
         <List
-          onClick={() => onClick("profile")}
-          selected={nav === "profile" ? "#e9c46a" : "#ffffff"}
+          onClick={() => onClick("/profile")}
+          selected={nav === "/profile" ? "#e9c46a" : "#ffffff"}
         >
           {session.loggedIn ? (
             <Link to="/profile">Profile</Link>
