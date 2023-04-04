@@ -12,6 +12,7 @@ export interface Session {
 }
 
 interface Store {
+  store: string;
   arr: string[];
   loading: boolean;
 }
@@ -39,6 +40,7 @@ export const sessionState = atom<Session>({
 export const storeState = atom<Store>({
   key: "storeState",
   default: {
+    store: "low",
     arr: ["메가커피", "컴포즈커피", "메머드커피", "빽다방", "더벤티"],
     loading: false,
   },

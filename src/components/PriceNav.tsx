@@ -42,19 +42,19 @@ const PriceList = styled.li<{ clicked: boolean }>`
 `;
 
 const PriceNav = () => {
-  const [price, setPrice] = useState("low");
   const location = useRecoilValue(locationState);
   const [store, setStore] = useRecoilState(storeState);
+  const [price, setPrice] = useState(store.store);
 
   const onPriceClick = (price: string) => {
     if (price === "low") {
-      setStore({ arr: coffeePrice.low, loading: true });
+      setStore({ store: "low", arr: coffeePrice.low, loading: true });
       setPrice("low");
     } else if (price === "middle") {
-      setStore({ arr: coffeePrice.middle, loading: true });
+      setStore({ store: "middle", arr: coffeePrice.middle, loading: true });
       setPrice("middle");
     } else {
-      setStore({ arr: coffeePrice.high, loading: true });
+      setStore({ store: "high", arr: coffeePrice.high, loading: true });
       setPrice("high");
     }
   };
