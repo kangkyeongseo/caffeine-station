@@ -26,13 +26,32 @@ const Map = styled.div`
   aspect-ratio: 1/1;
 `;
 
+const SubTitleContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 30px 0px 15px 0px;
+  padding: 0 10px;
+`;
+
+const SubTitle = styled.h3`
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 2px;
+`;
+
+const InfoText = styled.span`
+  font-size: 14px;
+  opacity: 0.7;
+`;
+
 const Lists = styled.ul`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   margin: 0 auto;
-  margin-top: 15px;
 `;
 
 const List = styled.div`
@@ -98,6 +117,8 @@ const KakaoMap = ({
       displayMarker(combineData[i]);
       bounds.extend(new kakao.maps.LatLng(combineData[i].y, combineData[i].x));
     }
+    bounds.extend(new kakao.maps.LatLng(mapLocation.lat, mapLocation.lon));
+
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
     map.setBounds(bounds);
   };
@@ -227,6 +248,14 @@ const KakaoMap = ({
   return (
     <Container>
       <Map id="kakao-map"></Map>
+      {sliceData.length > 0 ? (
+        <SubTitleContainer>
+          <SubTitle>카페를 찾았어요!</SubTitle>
+          <InfoText>
+            근방 {distance}m 안에 {combineData.length}개의 카페가 있습니다.
+          </InfoText>
+        </SubTitleContainer>
+      ) : null}
       {sliceData.length > 0 ? (
         <Lists>
           {sliceData

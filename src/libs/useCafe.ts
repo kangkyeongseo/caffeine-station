@@ -21,11 +21,11 @@ const useCafe = ({ arr, latlng }: Prop) => {
   useEffect(() => {
     if (arrLength === arr.length) {
       setLoading(false);
-      setArrLength(0);
     }
   }, [cafes]);
 
   const startSearch = (placeSearching: boolean, newPlace?: string) => {
+    setArrLength(0);
     setLoading(true);
     if (!placeSearching) {
       setCafes([]);
