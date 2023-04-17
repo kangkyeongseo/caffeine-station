@@ -188,9 +188,17 @@ const KakaoMap = ({
   useEffect(() => {
     if (combineData.length > 5) {
       setMaxLength(Math.ceil(combineData.length / 5));
-      setSliceData(combineData.slice(0, 5));
+      setSliceData(
+        combineData
+          .sort((a, b) => parseInt(a.distance!) - parseInt(b.distance!))
+          .slice(0, 5)
+      );
     } else {
-      setSliceData(combineData);
+      setSliceData(
+        combineData.sort(
+          (a, b) => parseInt(a.distance!) - parseInt(b.distance!)
+        )
+      );
       setMaxLength(1);
     }
     if (combineData.length > 0) {
@@ -222,8 +230,14 @@ const KakaoMap = ({
   let target = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setSliceData(combineData.slice(0, 5 * length));
+    setSliceData(
+      combineData
+        .sort((a, b) => parseInt(a.distance!) - parseInt(b.distance!))
+        .slice(0, 5 * length)
+    );
   }, [length]);
+
+  console.log(combineData, sliceData);
 
   const callback: IntersectionObserverCallback = (entries, observer) => {
     entries.forEach((entry) => {
@@ -258,13 +272,11 @@ const KakaoMap = ({
       ) : null}
       {sliceData.length > 0 ? (
         <Lists>
-          {sliceData
-            .sort((a, b) => parseInt(a.distance!) - parseInt(b.distance!))
-            .map((cafe) => (
-              <List ref={target} key={cafe.id}>
-                <Cafe cafe={cafe} />
-              </List>
-            ))}
+          {sliceData.map((cafe) => (
+            <List ref={target} key={cafe.id}>
+              <Cafe cafe={cafe} />
+            </List>
+          ))}
         </Lists>
       ) : (
         <NoCafe>근처에 선택한 카페가 존재하지 않습니다.</NoCafe>
